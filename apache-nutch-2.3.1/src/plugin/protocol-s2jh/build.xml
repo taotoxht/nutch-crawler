@@ -24,6 +24,7 @@
     <ant target="jar" inheritall="false" dir="../lib-http"/>
   	<ant target="jar" inheritall="false" dir="../lib-htmlunit"/>
   	<ant target="jar" inheritall="false" dir="../parse-lq"/>
+  	<ant target="jar" inheritall="false" dir="../parse-s2jh"/>
   </target>
 
   <!-- Add compilation dependencies to classpath -->
@@ -32,6 +33,7 @@
       <include name="**/lib-http/*.jar" />
       <include name="**/lib-htmlunit/*.jar" />
       <include name="**/parse-lq/*.jar" />
+      <include name="**/parse-s2jh/*.jar" />
     </fileset>
   </path>
 
