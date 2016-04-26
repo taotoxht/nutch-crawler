@@ -18,7 +18,10 @@
     -->
 	<property>
 		<name>plugin.includes</name>
+		<value>protocol-s2jh|urlfilter-regex|parse-(html|s2jh)|index-basic|urlnormalizer-(pass|regex|basic)|scoring-opic|indexer-solr</value>
+		<!-- 
 		<value>protocol-s2jh|urlfilter-regex|parse-(html|lq)|index-basic|urlnormalizer-(pass|regex|basic)|scoring-opic|indexer-solr</value>
+		 -->
 		<description>Regular expression naming plugin directory names to
 			include. Any plugin not matching this expression is
 			excluded.
@@ -148,7 +151,50 @@
     <!-- 代理配置 -->
 	<property>
 	  <name>http.useProxyPool</name>
-	  <value>true</value>
+	  <value>false</value>
 	  <description>自定义属性 是否使用代理池 默认 false</description>
 	</property>
+	
+	<property>
+		<name>parse.data.persist.mode</name>
+		<value>jdbc</value>
+		<description>
+			println: Just System.out.println
+			jdbc: Persist to Database by JDBC. 
+			CREATE DATABASE nutch DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+			MySQL table ddl for example:
+				    CREATE TABLE `crawl_data` (
+				    `url` varchar(255) NOT NULL,
+				    `code` varchar(255) NOT NULL,
+				    `name` varchar(255) DEFAULT NULL,
+				    `category` varchar(255) DEFAULT NULL,
+				    `order_index` int(255) DEFAULT NULL,
+				    `fetch_time` datetime NOT NULL,
+				    `text_value` text,
+				    `html_value` text,
+				    `date_value` datetime DEFAULT NULL,
+				    `num_value` decimal(18,2) DEFAULT NULL
+				    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			mongodb: Persist to MongoDB
+		</description>
+	</property>
+	<property>
+		<name>jdbc.driver</name>
+		<value>com.mysql.jdbc.Driver</value>
+	</property>
+	<property>
+		<name>jdbc.url</name>
+		<value>jdbc:mysql://192.168.11.54:3306/nutch?useUnicode=true&amp;characterEncoding=UTF-8</value>
+	</property>
+	<property>
+		<name>jdbc.username</name>
+		<value>root</value>
+	</property>
+	<property>
+		<name>jdbc.password</name>
+		<value>123456</value>
+	</property>
+	
+	
+	
 </configuration>

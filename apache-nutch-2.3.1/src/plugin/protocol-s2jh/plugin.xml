@@ -31,7 +31,7 @@
       <import plugin="nutch-extensionpoints"/>
       <import plugin="lib-htmlunit"/>
       <import plugin="lib-http"/>
-      <import plugin="parse-lq"/>
+      <import plugin="parse-s2jh"/>
    </requires>
 
    <extension id="org.apache.nutch.protocol.http"

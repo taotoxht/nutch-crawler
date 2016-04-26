@@ -43,7 +43,7 @@ import org.apache.nutch.metadata.Metadata;
 import org.apache.nutch.metadata.SpellCheckedMetadata;
 import org.apache.nutch.net.protocols.HttpDateFormat;
 import org.apache.nutch.net.protocols.Response;
-import org.apache.nutch.parse.lq.AbstractHtmlParseFilter;
+import org.apache.nutch.parse.s2jh.AbstractHtmlParseFilter;
 import org.apache.nutch.protocol.ProtocolException;
 import org.apache.nutch.protocol.htmlunit.HttpWebClient;
 import org.apache.nutch.protocol.htmlunit.ProxyIpPool;

@@ -74,6 +74,7 @@
   	<ant dir="lib-htmlunit" target="deploy" />
   	<ant dir="parse-lq" target="deploy" />
   	<ant dir="protocol-s2jh" target="deploy" />
+       <ant dir="parse-s2jh" target="deploy" />
   </target>
 
   <!-- ====================================================== -->
@@ -117,6 +118,7 @@
 	<ant dir="lib-htmlunit" target="test" />
     <ant dir="parse-lq" target="test" />
   	<ant dir="protocol-s2jh" target="test" />
+       <ant dir="parse-s2jh" target="test" />
   </target>
 
   <!-- ====================================================== -->
@@ -169,5 +171,6 @@
   	<ant dir="lib-htmlunit" target="clean" />
   	<ant dir="parse-lq" target="clean" />
   	<ant dir="protocol-s2jh" target="clean" />
+        <ant dir="parse-s2jh" target="clean" />
   </target>
 </project>
