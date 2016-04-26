@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 public class MyBatisUtil {
-    public static final String MYBATIS_CONFIG                      = "mybatis.config";
+    public static final String MYBATIS_CONFIG = "mybatis.config";
     public static final Logger LOG = LoggerFactory.getLogger(MyBatisUtil.class);
     static SqlSessionFactory   sqlSessionFactory                   = null;
 	public static   SqlSessionFactory getSessionFactory(Reader reader) {
