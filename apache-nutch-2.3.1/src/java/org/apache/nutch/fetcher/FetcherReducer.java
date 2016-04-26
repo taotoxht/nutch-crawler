@@ -497,16 +497,18 @@ public class FetcherReducer extends
             final Protocol protocol = this.protocolFactory.getProtocol(fit.url);
             final BaseRobotRules rules = protocol.getRobotRules(fit.url,
                 fit.page);
-            if (!rules.isAllowed(fit.u.toString())) {
-              // unblock
-              fetchQueues.finishFetchItem(fit, true);
-              if (LOG.isDebugEnabled()) {
-                LOG.debug("Denied by robots.txt: " + fit.url);
-              }
-              output(fit, null, ProtocolStatusUtils.STATUS_ROBOTS_DENIED,
-                  CrawlStatus.STATUS_GONE);
-              continue;
-            }
+            
+          //注释以下代码  不遵守robots协议
+//            if (!rules.isAllowed(fit.u.toString())) {
+//              // unblock
+//              fetchQueues.finishFetchItem(fit, true);
+//              if (LOG.isDebugEnabled()) {
+//                LOG.debug("Denied by robots.txt: " + fit.url);
+//              }
+//              output(fit, null, ProtocolStatusUtils.STATUS_ROBOTS_DENIED,
+//                  CrawlStatus.STATUS_GONE);
+//              continue;
+//            }
             if (rules.getCrawlDelay() > 0) {
               if (rules.getCrawlDelay() > maxCrawlDelay && maxCrawlDelay >= 0) {
                 // unblock
