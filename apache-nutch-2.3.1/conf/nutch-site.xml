@@ -6,12 +6,12 @@
 <configuration>
     <!--此参数主要用于在IDE环境开发模式运行，在构建输出的runtime部署运行请注释或删除此项参数-->
     <!-- Just for development, please remove this plugin.folders for production env -->
-    <!--
+    
     <property>
 	<name>plugin.folders</name>
 	<value>./src/plugin</value>
     </property>
-    -->
+    
 <!--定义Nutch运行过程引入的插件列表，正则表达式格式。-->
     <!--注意value不要换行尤其是基于xml格式化代码时可能由于value内容较长而自动换行，会导致末尾配置的插件不被识别。
     为了让indexer-solr被识别 所以最后加了一个插件index-html,部署到分布式环境下可以删除最后的"|index-html"插件
@@ -86,7 +86,7 @@
 
 	<property>
 		<name>http.agent.name</name>
-		<value>Your Nutch Spider</value>
+		<value>Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident</value>
 	</property>
 
 	<property>
@@ -97,6 +97,12 @@
 			one to retrieve.
 			It is a useful setting for search engines build for certain national group.
 		</description>
+	</property>
+	<property>
+	  <name>http.agent.version</name>
+	  <value></value>
+	  <description>A version string to advertise in the User-Agent 
+	   header.</description>
 	</property>
 
     <!--Nutch会根据页面信息及头信息判断页面编码，绝大部分情况能正常处理编码问题。-->
@@ -120,7 +126,7 @@
     <!--可基于Solr实际配置运行地址配置此参数-->
 	<property>
 		<name>solr.server.url</name>
-		<value>http://localhost:8080/solr</value>
+		<value></value>
 	</property>
 
     <!--是否强制采用AJAX支持方式执行FetcherJob，默认先基于HTTP模式获取页面内容，然后再基于AJAX模式获取。-->
@@ -138,4 +144,11 @@
         <name>generate.batch.id</name>
         <value>*</value>
     </property>
+    
+    <!-- 代理配置 -->
+	<property>
+	  <name>http.useProxyPool</name>
+	  <value>true</value>
+	  <description>自定义属性 是否使用代理池 默认 false</description>
+	</property>
 </configuration>

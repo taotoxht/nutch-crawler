@@ -18,7 +18,24 @@ package org.apache.nutch.protocol.s2jh;
 
 // JDK imports
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PushbackInputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -29,23 +46,16 @@ import org.apache.nutch.net.protocols.Response;
 import org.apache.nutch.parse.lq.AbstractHtmlParseFilter;
 import org.apache.nutch.protocol.ProtocolException;
 import org.apache.nutch.protocol.htmlunit.HttpWebClient;
+import org.apache.nutch.protocol.htmlunit.ProxyIpPool;
 import org.apache.nutch.protocol.http.api.HttpBase;
 import org.apache.nutch.protocol.http.api.HttpException;
 import org.apache.nutch.storage.WebPage;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /** 
  * An smart http fetcher.  Using HTTP, Htmlunit and Selenium WebDriver to fetch ajax page document.
@@ -64,7 +74,9 @@ public class HttpResponse implements Response {
     private byte[] content;
     private int code;
     private final Metadata headers = new SpellCheckedMetadata();
-
+    //ip代理池
+    private ProxyIpPool proxyIpPool;
+    
     private String charset;
 
     protected enum Scheme {
@@ -116,8 +128,21 @@ public class HttpResponse implements Response {
             socket.setSoTimeout(http.getTimeout());
 
             // connect
-            String sockHost = http.useProxy() ? http.getProxyHost() : host;
-            int sockPort = http.useProxy() ? http.getProxyPort() : port;
+            String proxyHost =null;
+            int proxyPort = 0;
+            if(http.isUseProxyPool()){
+       		 proxyIpPool = ProxyIpPool.getSingleton(conf);
+       		  String[] proxy = proxyIpPool.getProxy();
+       		  if(proxy!=null){
+       			  proxyHost = proxy[0];
+       			  proxyPort = Integer.parseInt(proxy[1]);
+       		  }
+            }
+            String sockHost =proxyHost!=null?proxyHost:host;
+            int sockPort = proxyHost!=null?proxyPort:port;
+            
+//            String sockHost = http.useProxy() ? http.getProxyHost() : host;
+//            int sockPort = http.useProxy() ? http.getProxyPort() : port;
             InetSocketAddress sockAddr = new InetSocketAddress(sockHost, sockPort);
             socket.connect(sockAddr, http.getTimeout());
 
@@ -152,7 +177,7 @@ public class HttpResponse implements Response {
             OutputStream req = socket.getOutputStream();
 
             StringBuffer reqStr = new StringBuffer("GET ");
-            if (http.useProxy()) {
+            if (proxyHost != null) {
                 reqStr.append(url.getProtocol() + "://" + host + portString + path);
             } else {
                 reqStr.append(path);
@@ -209,9 +234,9 @@ public class HttpResponse implements Response {
 
             if (!url.toString().endsWith("robots.txt")) {
                 if (readPlainContent(url.toString(), in)) {
-                } else if (readPlainContentByHtmlunit(url)) {
+                } else if (readPlainContentByHtmlunit(url,proxyHost,proxyPort)) {
                 } else {
-                    readPlainContentByWebDriver(url);
+                    readPlainContentByWebDriver(url,proxyHost,proxyPort);
                 }
             }
 
@@ -325,14 +350,14 @@ public class HttpResponse implements Response {
         return ok;
     }
 
-    private boolean readPlainContentByHtmlunit(URL url) throws Exception {
+    private boolean readPlainContentByHtmlunit(URL url,String proxyHost,int proxyPort) throws Exception {
 
         String urlStr = url.toString();
         if (urlStr.indexOf("detail.tmall.com") > -1) {
             return false;
         }
         Http.LOG.debug("Htmlunit fetching: " + url);
-        HtmlPage page = (HtmlPage) HttpWebClient.getHtmlPage(urlStr, conf);
+        HtmlPage page = (HtmlPage) HttpWebClient.getHtmlPage(urlStr, conf,proxyHost,proxyPort);
         charset = page.getPageEncoding();
         String html = null;
         boolean ok = true;
@@ -370,7 +395,7 @@ public class HttpResponse implements Response {
      * @param url
      * @throws Exception
      */
-    private void readPlainContentByWebDriver(URL url) throws Exception {
+    private void readPlainContentByWebDriver(URL url,String proxyHost,int proxyPort) throws Exception {
 
         String urlStr = url.toString();
         Http.LOG.debug("WebDriver fetching: " + url);
@@ -379,7 +404,23 @@ public class HttpResponse implements Response {
 
         WebDriver driver = null;
         try {
-            driver = new FirefoxDriver();
+        	//加代理
+        	if(!StringUtils.isEmpty(proxyHost)){
+        		FirefoxProfile profile = new FirefoxProfile();
+                profile.setPreference("network.proxy.type", 1);
+                profile.setPreference("network.proxy.http", proxyHost);
+                profile.setPreference("network.proxy.http_port", proxyPort);
+                profile.setPreference("network.proxy.ssl", proxyHost);
+                profile.setPreference("network.proxy.ssl_port", proxyPort);
+                profile.setPreference("network.proxy.ftp", proxyHost);
+                profile.setPreference("network.proxy.ftp_port", proxyPort);
+                profile.setPreference("network.proxy.socks", proxyHost);
+                profile.setPreference("network.proxy.socks_port", proxyPort);
+                driver = new FirefoxDriver(profile);
+        	}else{
+        		driver = new FirefoxDriver();
+        	}
+        	
             driver.get(url.toString());
 
             int i = 0;
@@ -390,7 +431,7 @@ public class HttpResponse implements Response {
                     break;
                 }
                 //Trigger scroll event to get ajax content                
-                ((JavascriptExecutor) driver).executeScript("scroll(0," + (i * 500) + ");");
+                ((JavascriptExecutor) driver).executeScript("scroll(0," + (i * 6000) + ");");
                 Http.LOG.info("Sleep " + i + " seconds to wait WebDriver execution...");
                 Thread.sleep(1000);
             }

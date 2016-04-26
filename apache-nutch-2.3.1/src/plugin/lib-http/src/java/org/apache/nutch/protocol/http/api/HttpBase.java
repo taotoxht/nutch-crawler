@@ -28,8 +28,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.avro.util.Utf8;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.util.StringUtils;
@@ -42,9 +40,11 @@ import org.apache.nutch.protocol.ProtocolStatusCodes;
 import org.apache.nutch.protocol.ProtocolStatusUtils;
 import org.apache.nutch.storage.WebPage;
 import org.apache.nutch.util.Bytes;
-import org.apache.nutch.util.GZIPUtils;
 import org.apache.nutch.util.DeflateUtils;
+import org.apache.nutch.util.GZIPUtils;
 import org.apache.nutch.util.MimeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // crawler-commons imports
 import crawlercommons.robots.BaseRobotRules;
@@ -109,6 +109,9 @@ public abstract class HttpBase implements Protocol {
   /** Which TLS/SSL cipher suites to support */
   protected Set<String> tlsPreferredCipherSuites;
 
+  /**自定义属性 是否使用代理池 */
+  private boolean useProxyPool;
+  
   /** Creates a new instance of HttpBase */
   public HttpBase() {
     this(null);
@@ -138,6 +141,9 @@ public abstract class HttpBase implements Protocol {
     this.mimeTypes = new MimeUtil(conf);
     this.useHttp11 = conf.getBoolean("http.useHttp11", false);
     this.responseTime = conf.getBoolean("http.store.responsetime", true);
+    //自定义代理池
+    this.useProxyPool = conf.getBoolean("http.useProxyPool", false);
+    
     this.robots.setConf(conf);
 
     // NUTCH-1941: read list of alternating agent names
@@ -523,4 +529,9 @@ public abstract class HttpBase implements Protocol {
   public BaseRobotRules getRobotRules(String url, WebPage page) {
     return robots.getRobotRulesSet(this, url);
   }
+
+public boolean isUseProxyPool() {
+	return useProxyPool;
+}
+  
 }

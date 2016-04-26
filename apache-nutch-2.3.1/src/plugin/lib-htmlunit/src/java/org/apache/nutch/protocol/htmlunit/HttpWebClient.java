@@ -1,12 +1,18 @@
 package org.apache.nutch.protocol.htmlunit;
 
-import com.gargoylesoftware.htmlunit.*;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import java.net.URL;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebRequest;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /**
  * Htmlunit WebClient Helper
@@ -22,7 +28,7 @@ public class HttpWebClient {
 
     private static String acceptLanguage;
 
-    public static Page getPage(String url, Configuration conf) {
+    public static Page getPage(String url, Configuration conf,String proxyHost,int proxyPort) {
         synchronized (Thread.currentThread()) {
             try {
                 WebRequest req = new WebRequest(new URL(url));
@@ -32,7 +38,13 @@ public class HttpWebClient {
                 WebClient webClient = threadWebClient.get();
                 if (webClient == null) {
                     LOG.info("Initing web client for thread: {}", Thread.currentThread().getId());
-                    webClient = new WebClient(BrowserVersion.FIREFOX_38);
+//                    webClient = new WebClient(BrowserVersion.FIREFOX_38);
+                  //更改为 ip 代理形式
+                    if(!StringUtils.isEmpty(proxyHost)){
+                    	webClient = new WebClient(BrowserVersion.FIREFOX_38, proxyHost, proxyPort);
+                    }else{
+                    	 webClient = new WebClient(BrowserVersion.FIREFOX_38);
+                    }
                     webClient.getOptions().setCssEnabled(false);
                     webClient.getOptions().setAppletEnabled(false);
                     webClient.getOptions().setThrowExceptionOnScriptError(false);
@@ -44,7 +56,8 @@ public class HttpWebClient {
                     webClient.setWebConnection(new RegexHttpWebConnection(webClient, conf));
                     webClient.waitForBackgroundJavaScript(600 * 1000);
                     //设置足够高度以支持一些需要页面内容多需屏幕滚动显示的页面
-                    webClient.getCurrentWindow().setInnerHeight(6000);
+//                    webClient.getCurrentWindow().setInnerHeight(6000);
+                    webClient.getCurrentWindow().setInnerHeight(20000);
                     if (acceptLanguage == null && conf != null) {
                         acceptLanguage = conf.get("http.accept.language", " zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3");
                     }
@@ -58,12 +71,12 @@ public class HttpWebClient {
         }
     }
 
-    public static HtmlPage getHtmlPage(String url, Configuration conf) {
-        return (HtmlPage) getPage(url, conf);
+    public static HtmlPage getHtmlPage(String url, Configuration conf,String proxyHost,int proxyPort) {
+        return (HtmlPage) getPage(url, conf,proxyHost,proxyPort);
     }
 
     public static void main(String[] args) {
-        HtmlPage page = getHtmlPage("http://www.jumeiglobal.com/deal/ht150312p1286156t1.html", null);
+        HtmlPage page = getHtmlPage("http://www.jumeiglobal.com/deal/ht150312p1286156t1.html", null,null,0);
         System.out.println(page.asXml());
     }
 }
