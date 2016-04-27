@@ -200,8 +200,7 @@ public class ElongHotelHtmlParseFilter extends AbstractHtmlParseFilter {
 
     @Override
     public String getUrlFilterRegex() {
-
-    	return "http://hotel.elong.com/guangzhou/.*|http://hotel.elong.com/.*";
+    	return "^http://hotel.elong.com/.+/\\d+/?.*$";
     }
 
     @Override

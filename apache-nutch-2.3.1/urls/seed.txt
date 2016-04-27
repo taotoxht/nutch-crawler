@@ -6,4 +6,4 @@
 #http://sports.qq.com/
 #网易体育
 #http://sports.163.com/
-#http://hotel.elong.com/guangzhou/02001382/
+http://hotel.elong.com/dongguan
