@@ -36,8 +36,9 @@ public class ElongHotelHtmlParseFilter extends AbstractHtmlParseFilter {
     public static final Logger LOG = LoggerFactory.getLogger(ElongHotelHtmlParseFilter.class);
 
     @Override
-    public Parse filterInternal(String url, WebPage page, Parse parse, HTMLMetaTags metaTags, DocumentFragment doc) throws Exception {
+    public Parse filterInternal(String url, WebPage page, Parse parse, HTMLMetaTags metaTags, DocumentFragment doc) {
   	
+    	LOG.info("准备存储  for: {}", url);
     	List<CrawlData> crawlDatas = Lists.newArrayList();
         crawlDatas.add(new CrawlData(url, "domain", "域名").setTextValue("elong.com", page));
 
@@ -195,6 +196,8 @@ public class ElongHotelHtmlParseFilter extends AbstractHtmlParseFilter {
         FROM crawl_data GROUP BY url,fetch_time
          */
         saveCrawlData(url, crawlDatas, page);
+        LOG.info("存储end  for: {}", url);
+        
         return parse;
     }
 
@@ -205,7 +208,8 @@ public class ElongHotelHtmlParseFilter extends AbstractHtmlParseFilter {
 
     @Override
     protected boolean isParseDataFetchLoadedInternal(String url, String html) {	
-   	if(html.indexOf("ht_pri_num") > 0 && html.indexOf("hmap_tra_list")>0 ){	    
+    //ht_pri_num 判断套餐价格  	hmap_tra_list 
+   	if(html.indexOf("ht_pri_num") > 0 && html.indexOf("hmap_table_spo_xxx")>0 ){	    
    	 /*	byte[] byteContent = html.toString().getBytes();
         	OutputStream os;
     		try {

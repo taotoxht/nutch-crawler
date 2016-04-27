@@ -184,7 +184,7 @@
 	</property>
 	<property>
 		<name>jdbc.url</name>
-		<value>jdbc:mysql://192.168.11.54:3306/nutch?useUnicode=true&amp;characterEncoding=UTF-8</value>
+		<value>jdbc:mysql://192.168.9.220:3306/nutch?useUnicode=true&amp;characterEncoding=UTF-8</value>
 	</property>
 	<property>
 		<name>jdbc.username</name>
@@ -192,7 +192,7 @@
 	</property>
 	<property>
 		<name>jdbc.password</name>
-		<value>123456</value>
+		<value>ycf_test</value>
 	</property>
 	
 	

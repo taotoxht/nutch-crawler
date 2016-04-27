@@ -403,6 +403,7 @@ public class HttpResponse implements Response {
         boolean ok = true;
 
         WebDriver driver = null;
+        int i = 0;
         try {
         	//加代理
         	if(!StringUtils.isEmpty(proxyHost)){
@@ -423,7 +424,7 @@ public class HttpResponse implements Response {
         	
             driver.get(url.toString());
 
-            int i = 0;
+           
             while (i++ < MAX_AJAX_WAIT_SECONDS) {
                 html = driver.getPageSource().trim();
                 ok = isParseDataFetchLoaded(urlStr, html);
@@ -447,6 +448,12 @@ public class HttpResponse implements Response {
             this.code = 200;
             content = html.getBytes();
         } else {
+        	// 重试次数超过限制 不管成功与否 直接保存结果 避免 数据丢失
+        	if(i >= MAX_AJAX_WAIT_SECONDS){
+        		Http.LOG.warn("Failure WebDriver parse page for: {},but inject the content!!!", url);
+        		 this.code = 200;
+                 content = html.getBytes();
+        	}
             Http.LOG.warn("Failure WebDriver parse page for: {}", url);
             Http.LOG.warn("WebDriver Fetch Failure URL: " + url + ", CharsetName: " + charset + " , Page HTML=\n" + html);
         }

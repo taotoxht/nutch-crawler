@@ -107,10 +107,7 @@
         <!--
         <dependency org="org.apache.gora" name="gora-sql" rev="0.1.1-incubating" conf="*->default" />
         -->
-        <!-- Uncomment this to use MySQL as database with SQL as Gora store. -->
-        <!--
-        <dependency org="mysql" name="mysql-connector-java" rev="5.1.18" conf="*->default"/>
-        -->
+        <dependency org="mysql" name="mysql-connector-java" rev="5.1.38" conf="*->default"/>
         <!-- Uncomment this to use HBase as Gora backend. -->
         <!--
         <dependency org="org.apache.gora" name="gora-hbase" rev="0.6.1" conf="*->default" />
