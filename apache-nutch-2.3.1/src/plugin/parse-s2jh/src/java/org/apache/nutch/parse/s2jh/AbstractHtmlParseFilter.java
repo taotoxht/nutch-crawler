@@ -93,12 +93,19 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 	private boolean useProxyPool;
 	private ProxyIpPool proxyIpPool;
 
-	public void setConf(Configuration conf) {
-		this.conf = conf;
+	public AbstractHtmlParseFilter() {
 		String filterRegex = getUrlFilterRegex();
 		if (StringUtils.isNotBlank(filterRegex)) {
 			this.filterPattern = Pattern.compile(getUrlFilterRegex());
 		}
+	}
+	
+	public void setConf(Configuration conf) {
+		this.conf = conf;
+		String filterRegex = getUrlFilterRegex();
+		/*if (StringUtils.isNotBlank(filterRegex)) {
+			this.filterPattern = Pattern.compile(getUrlFilterRegex());
+		}*/
 
 		this.parserImpl = getConf().get("parser.html.impl", "neko");
 		this.defaultCharEncoding = getConf().get("parser.character.encoding.default", "windows-1252");
@@ -603,6 +610,7 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 	 * @return
 	 */
 	public static AbstractHtmlParseFilter[] getParseFilters(Configuration conf) {
+		LOG.error("taotoxht log: getParseFilters start");
 		// Prepare parseFilters
 		String order = conf.get(HTMLPARSEFILTER_ORDER);
 		if (parseFilters == null) {
@@ -620,16 +628,19 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 				if (point == null)
 					throw new RuntimeException(ParseFilter.X_POINT_ID + " not found.");
 				Extension[] extensions = point.getExtensions();
+				LOG.error("taotoxht log: getParseFilters  extensions size: "+extensions.length);
 				for (int i = 0; i < extensions.length; i++) {
 					Extension extension = extensions[i];
 					ParseFilter parseFilter = (ParseFilter) extension.getExtensionInstance();
-					if (parseFilter instanceof AbstractHtmlParseFilter) {
+					//这里 命令行下执行 parseFilter 和 AbstractHtmlParseFilter类加载器 不同 不能用 instanceof
+					if (parseFilter.getClass().getSuperclass().getName().equals(AbstractHtmlParseFilter.class.getName())) {
 						if (!filterMap.containsKey(parseFilter.getClass().getName())) {
 							filterMap.put(parseFilter.getClass().getName(), (AbstractHtmlParseFilter) parseFilter);
 						}
 					}
 				}
 				parseFilters = filterMap.values().toArray(new AbstractHtmlParseFilter[filterMap.size()]);
+				LOG.error("taotoxht log: getParseFilters  parseFilters size: "+parseFilters.length);
 				if (orderedFilters != null) {
 					ArrayList<ParseFilter> filters = new ArrayList<ParseFilter>();
 					for (int i = 0; i < orderedFilters.length; i++) {
