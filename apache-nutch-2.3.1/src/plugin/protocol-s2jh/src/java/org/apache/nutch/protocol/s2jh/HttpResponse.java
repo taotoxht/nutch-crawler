@@ -79,6 +79,8 @@ public class HttpResponse implements Response {
     private ProxyIpPool proxyIpPool;
     
     private String charset;
+    
+    private String webDriverPath;
 
     protected enum Scheme {
         HTTP, HTTPS,
@@ -86,6 +88,7 @@ public class HttpResponse implements Response {
 
     public HttpResponse(HttpBase http, URL url, WebPage page) throws ProtocolException, IOException {
         conf = http.getConf();
+        webDriverPath = conf.get("webdriver.binary.path");
         this.http = http;
         this.url = url;
         Scheme scheme = null;
@@ -237,7 +240,7 @@ public class HttpResponse implements Response {
                 if (readPlainContent(url.toString(), in)) {
                 } else if (readPlainContentByHtmlunit(url,proxyHost,proxyPort)) {
                 } else {
-                    readPlainContentByWebDriver(url,proxyHost,proxyPort);
+                    readPlainContentByWebDriver(url,proxyHost,proxyPort,webDriverPath);
                 }
             }
 
@@ -396,7 +399,7 @@ public class HttpResponse implements Response {
      * @param url
      * @throws Exception
      */
-    private void readPlainContentByWebDriver(URL url,String proxyHost,int proxyPort) throws Exception {
+    private void readPlainContentByWebDriver(URL url,String proxyHost,int proxyPort,String webDriverPath) throws Exception {
 
         String urlStr = url.toString();
         Http.LOG.debug("WebDriver fetching: " + url);
@@ -406,6 +409,8 @@ public class HttpResponse implements Response {
         WebDriver driver = null;
         int i = 0;
         try {
+        	//指定firefox的安装路径
+        	System.setProperty("webdriver.firefox.bin",webDriverPath);
         	//加代理
         	if(!StringUtils.isEmpty(proxyHost)){
         		FirefoxProfile profile = new FirefoxProfile();

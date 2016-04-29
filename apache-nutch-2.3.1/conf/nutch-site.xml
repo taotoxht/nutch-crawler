@@ -154,6 +154,16 @@
 	  <description>自定义属性 是否使用代理池 默认 false</description>
 	</property>
 	
+	<!-- webdirver binary path -->
+	<property>
+	  <name>webdriver.binary.path</name>
+	  <value>true</value>
+	  <description>selenium webdriver 的具体的二进制 路径 如 （
+	   phantomjs.binary.path
+	   webdriver.firefox.bin
+	  ） </description>
+	</property>
+	
 	<property>
 		<name>parse.data.persist.mode</name>
 		<value>jdbc</value>
