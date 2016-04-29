@@ -29,8 +29,10 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.net.ssl.SSLSocket;
@@ -55,6 +57,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
@@ -409,27 +414,12 @@ public class HttpResponse implements Response {
         WebDriver driver = null;
         int i = 0;
         try {
-        	//指定firefox的安装路径
-        	System.setProperty("webdriver.firefox.bin",webDriverPath);
-        	//加代理
-        	if(!StringUtils.isEmpty(proxyHost)){
-        		FirefoxProfile profile = new FirefoxProfile();
-                profile.setPreference("network.proxy.type", 1);
-                profile.setPreference("network.proxy.http", proxyHost);
-                profile.setPreference("network.proxy.http_port", proxyPort);
-                profile.setPreference("network.proxy.ssl", proxyHost);
-                profile.setPreference("network.proxy.ssl_port", proxyPort);
-                profile.setPreference("network.proxy.ftp", proxyHost);
-                profile.setPreference("network.proxy.ftp_port", proxyPort);
-                profile.setPreference("network.proxy.socks", proxyHost);
-                profile.setPreference("network.proxy.socks_port", proxyPort);
-                driver = new FirefoxDriver(profile);
-        	}else{
-        		driver = new FirefoxDriver();
-        	}
+//        	driver = createFirefoxDriver(proxyHost,proxyPort,webDriverPath);
+        	driver = createPhantomjsDriver(proxyHost,proxyPort,webDriverPath);
         	
             driver.get(url.toString());
-
+            //Trigger scroll event to get ajax content                
+            ((JavascriptExecutor) driver).executeScript("scroll(0," +  6000 + ");");
            
             while (i++ < MAX_AJAX_WAIT_SECONDS) {
                 html = driver.getPageSource().trim();
@@ -438,10 +428,12 @@ public class HttpResponse implements Response {
                     break;
                 }
                 //Trigger scroll event to get ajax content                
-                ((JavascriptExecutor) driver).executeScript("scroll(0," + (i * 6000) + ");");
+                ((JavascriptExecutor) driver).executeScript("scroll(0," + ((i+1) * 6000) + ");");
                 Http.LOG.info("Sleep " + i + " seconds to wait WebDriver execution...");
                 Thread.sleep(1000);
             }
+        }catch(Exception e){
+        	e.printStackTrace();
         } finally {
             //Ensure driver quit
             if (driver != null) {
@@ -465,7 +457,56 @@ public class HttpResponse implements Response {
         }
     }
 
-    /**
+    private WebDriver createPhantomjsDriver(String proxyHost, int proxyPort,
+			String webDriverPath) {
+    	WebDriver driver = null;
+    	DesiredCapabilities profile = new DesiredCapabilities();
+    	profile.setCapability("phantomjs.binary.path",webDriverPath);
+    	profile.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "userAgent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36");
+    	profile.setJavascriptEnabled(true);
+    	// Disable "web-security", enable all possible "ssl-protocols" and "ignore-ssl-errors" for PhantomJSDriver
+    	//and proxy
+    	List<String> argList=new ArrayList<>();
+    	argList.add("--web-security=false");
+    	argList.add("--ssl-protocol=any");
+    	argList.add("--ignore-ssl-errors=true");
+    	argList.add("--webdriver-loglevel=INFO");
+    	if(StringUtils.isNotEmpty(proxyHost)){
+    		
+    		argList.add("--proxy="+proxyHost+":"+proxyPort);
+    		argList.add("--proxy-type=socks5");
+//    		argList.add("--proxy=http://"+"127.0.0.1"+":"+proxyPort);
+//    		argList.add("--proxy-type=http");
+    	}
+    	profile.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,argList.toArray() );
+    	driver = new PhantomJSDriver(profile);
+		return driver;
+	}
+
+	private WebDriver createFirefoxDriver(String proxyHost, int proxyPort,
+			String webDriverPath2) {
+    	WebDriver driver = null;
+    	//指定firefox的安装路径
+    	System.setProperty("webdriver.firefox.bin",webDriverPath);
+    	if(!StringUtils.isEmpty(proxyHost)){
+    		FirefoxProfile profile = new FirefoxProfile();
+            profile.setPreference("network.proxy.type", 1);
+            profile.setPreference("network.proxy.http", proxyHost);
+            profile.setPreference("network.proxy.http_port", proxyPort);
+            profile.setPreference("network.proxy.ssl", proxyHost);
+            profile.setPreference("network.proxy.ssl_port", proxyPort);
+            profile.setPreference("network.proxy.ftp", proxyHost);
+            profile.setPreference("network.proxy.ftp_port", proxyPort);
+            profile.setPreference("network.proxy.socks", proxyHost);
+            profile.setPreference("network.proxy.socks_port", proxyPort);
+            driver = new FirefoxDriver(profile);
+    	}else{
+    		driver = new FirefoxDriver();
+    	}
+		return driver;
+	}
+	
+	/**
      * Check excepted data has loaded within the current AJAX page content
      * If not we need sleep sometime to wait ajax execution to get more content  
      * @param url 
@@ -474,43 +515,43 @@ public class HttpResponse implements Response {
      * @throws IllegalAccessException 
      * @throws InstantiationException 
      */
-    private boolean isParseDataFetchLoaded(String url, String html) {
-        boolean ok = true;
-      
-        AbstractHtmlParseFilter[] parseFilters = AbstractHtmlParseFilter.getParseFilters(conf);
-        Http.LOG.error("Invoke isParseDataFetchLoaded , parseFilters length {} , ", parseFilters.length);
-        if (parseFilters != null) {
-            for (AbstractHtmlParseFilter htmlParseFilter : parseFilters) {
-                Boolean ret = htmlParseFilter.isParseDataFetchLoaded(url, html);
-                Http.LOG.debug("Invoke isParseDataFetchLoaded of {} , return : {}", htmlParseFilter.getClass(), ret);
-                //Any one return NOT loaded, break and return flase
-                if (ret == false) {
-                    ok = false;
-                    break;
-                }
-            }
-        }
-        return ok;
-    }
-//    private boolean isParseDataFetchLoaded(String url, String html) throws InstantiationException, IllegalAccessException {
-//	    boolean ok = true;
-//	  
-////	    AbstractHtmlParseFilter[] parseFilters = AbstractHtmlParseFilter.getParseFilters(conf);
-//	    AbstractHtmlParseFilter[] parseFilters = HtmlParseFilterHelper.getParseFilters("org.apache.nutch.parse.s2jh");
-//	    Http.LOG.error("Invoke isParseDataFetchLoaded , parseFilters length {} , ", parseFilters.length);
-//	    if (parseFilters != null) {
-//	        for (AbstractHtmlParseFilter htmlParseFilter : parseFilters) {
-//	            Boolean ret = htmlParseFilter.isParseDataFetchLoaded(url, html);
-//	            Http.LOG.debug("Invoke isParseDataFetchLoaded of {} , return : {}", htmlParseFilter.getClass(), ret);
-//	            //Any one return NOT loaded, break and return flase
-//	            if (ret == false) {
-//	                ok = false;
-//	                break;
-//	            }
-//	        }
-//	    }
-//	    return ok;
-//	}
+//    private boolean isParseDataFetchLoaded(String url, String html) {
+//        boolean ok = true;
+//      
+//        AbstractHtmlParseFilter[] parseFilters = AbstractHtmlParseFilter.getParseFilters(conf);
+//        Http.LOG.error("Invoke isParseDataFetchLoaded , parseFilters length {} , ", parseFilters.length);
+//        if (parseFilters != null) {
+//            for (AbstractHtmlParseFilter htmlParseFilter : parseFilters) {
+//                Boolean ret = htmlParseFilter.isParseDataFetchLoaded(url, html);
+//                Http.LOG.debug("Invoke isParseDataFetchLoaded of {} , return : {}", htmlParseFilter.getClass(), ret);
+//                //Any one return NOT loaded, break and return flase
+//                if (ret == false) {
+//                    ok = false;
+//                    break;
+//                }
+//            }
+//        }
+//        return ok;
+//    }
+    private boolean isParseDataFetchLoaded(String url, String html) throws InstantiationException, IllegalAccessException {
+	    boolean ok = true;
+	  
+//	    AbstractHtmlParseFilter[] parseFilters = AbstractHtmlParseFilter.getParseFilters(conf);
+	    AbstractHtmlParseFilter[] parseFilters = HtmlParseFilterHelper.getParseFilters("org.apache.nutch.parse.s2jh");
+	    Http.LOG.error("Invoke isParseDataFetchLoaded , parseFilters length {} , ", parseFilters.length);
+	    if (parseFilters != null) {
+	        for (AbstractHtmlParseFilter htmlParseFilter : parseFilters) {
+	            Boolean ret = htmlParseFilter.isParseDataFetchLoaded(url, html);
+	            Http.LOG.debug("Invoke isParseDataFetchLoaded of {} , return : {}", htmlParseFilter.getClass(), ret);
+	            //Any one return NOT loaded, break and return flase
+	            if (ret == false) {
+	                ok = false;
+	                break;
+	            }
+	        }
+	    }
+	    return ok;
+	}
    /* private boolean isParseDataFetchLoaded(String url, String html) throws InstantiationException, IllegalAccessException {
         boolean ok = true;
       
