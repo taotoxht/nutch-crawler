@@ -469,7 +469,7 @@ public class HttpResponse implements Response {
      * @throws IllegalAccessException 
      * @throws InstantiationException 
      */
-   /* private boolean isParseDataFetchLoaded(String url, String html) {
+    private boolean isParseDataFetchLoaded(String url, String html) {
         boolean ok = true;
       
         AbstractHtmlParseFilter[] parseFilters = AbstractHtmlParseFilter.getParseFilters(conf);
@@ -486,26 +486,26 @@ public class HttpResponse implements Response {
             }
         }
         return ok;
-    }*/
-    private boolean isParseDataFetchLoaded(String url, String html) throws InstantiationException, IllegalAccessException {
-	    boolean ok = true;
-	  
-//	    AbstractHtmlParseFilter[] parseFilters = AbstractHtmlParseFilter.getParseFilters(conf);
-	    AbstractHtmlParseFilter[] parseFilters = HtmlParseFilterHelper.getParseFilters("org.apache.nutch.parse.s2jh");
-	    Http.LOG.error("Invoke isParseDataFetchLoaded , parseFilters length {} , ", parseFilters.length);
-	    if (parseFilters != null) {
-	        for (AbstractHtmlParseFilter htmlParseFilter : parseFilters) {
-	            Boolean ret = htmlParseFilter.isParseDataFetchLoaded(url, html);
-	            Http.LOG.debug("Invoke isParseDataFetchLoaded of {} , return : {}", htmlParseFilter.getClass(), ret);
-	            //Any one return NOT loaded, break and return flase
-	            if (ret == false) {
-	                ok = false;
-	                break;
-	            }
-	        }
-	    }
-	    return ok;
-	}
+    }
+//    private boolean isParseDataFetchLoaded(String url, String html) throws InstantiationException, IllegalAccessException {
+//	    boolean ok = true;
+//	  
+////	    AbstractHtmlParseFilter[] parseFilters = AbstractHtmlParseFilter.getParseFilters(conf);
+//	    AbstractHtmlParseFilter[] parseFilters = HtmlParseFilterHelper.getParseFilters("org.apache.nutch.parse.s2jh");
+//	    Http.LOG.error("Invoke isParseDataFetchLoaded , parseFilters length {} , ", parseFilters.length);
+//	    if (parseFilters != null) {
+//	        for (AbstractHtmlParseFilter htmlParseFilter : parseFilters) {
+//	            Boolean ret = htmlParseFilter.isParseDataFetchLoaded(url, html);
+//	            Http.LOG.debug("Invoke isParseDataFetchLoaded of {} , return : {}", htmlParseFilter.getClass(), ret);
+//	            //Any one return NOT loaded, break and return flase
+//	            if (ret == false) {
+//	                ok = false;
+//	                break;
+//	            }
+//	        }
+//	    }
+//	    return ok;
+//	}
    /* private boolean isParseDataFetchLoaded(String url, String html) throws InstantiationException, IllegalAccessException {
         boolean ok = true;
       
