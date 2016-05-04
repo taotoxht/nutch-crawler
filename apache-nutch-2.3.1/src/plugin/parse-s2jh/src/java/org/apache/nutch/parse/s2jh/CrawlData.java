@@ -26,7 +26,7 @@ public class CrawlData implements Serializable {
 
     public static final Logger LOG = LoggerFactory.getLogger(CrawlData.class);
 
-    public final static DateFormat DEFAULT_TIME_FORMATER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public final static String DEFAULT_TIME_FORMATER = "yyyy-MM-dd HH:mm:ss";
 
     //添加固定前缀标示属性需要添加到Solr Index属性中
     private final static String INDEX_PROPERTY_PREFIX = "_index_";
@@ -177,7 +177,7 @@ public class CrawlData implements Serializable {
         Assert.isNull(type, "一条记录只能存放一种类型数据：type=" + type);
         this.type = ValueType.date;
         this.dateValue = dateValue;
-        injectDataToPageMetadata(code, dateValue == null ? null : DEFAULT_TIME_FORMATER.format(dateValue), page);
+        injectDataToPageMetadata(code, dateValue == null ? null : new SimpleDateFormat(DEFAULT_TIME_FORMATER).format(dateValue), page);
         return this;
     }
 
@@ -203,7 +203,7 @@ public class CrawlData implements Serializable {
             return "NULL";
         }
         if (value instanceof Date) {
-            return DEFAULT_TIME_FORMATER.format((Date) value);
+            return new SimpleDateFormat(DEFAULT_TIME_FORMATER).format((Date) value);
         }
         String strValue = value.toString();
         if (strValue.length() > 200) {

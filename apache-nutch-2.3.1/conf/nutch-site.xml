@@ -6,11 +6,11 @@
 <configuration>
     <!--此参数主要用于在IDE环境开发模式运行，在构建输出的runtime部署运行请注释或删除此项参数-->
     <!-- Just for development, please remove this plugin.folders for production env -->
-      <!-- <property>
+     <!--  <property>
         <name>plugin.folders</name>
         <value>./src/plugin</value>
-    </property> 
-     -->
+    </property>  -->
+     
 <!--定义Nutch运行过程引入的插件列表，正则表达式格式。-->
     <!--注意value不要换行尤其是基于xml格式化代码时可能由于value内容较长而自动换行，会导致末尾配置的插件不被识别。
     为了让indexer-solr被识别 所以最后加了一个插件index-html,部署到分布式环境下可以删除最后的"|index-html"插件
@@ -170,7 +170,7 @@
 	
 	<property>
 		<name>parse.data.persist.mode</name>
-		<value>jdbc</value>
+		<value>mongodb</value>
 		<description>
 			println: Just System.out.println
 			jdbc: Persist to Database by JDBC. 
@@ -207,7 +207,18 @@
 		<name>jdbc.password</name>
 		<value>123456</value>
 	</property>
-	
+	<property>
+		<name>mongodb.host</name>
+		<value>192.168.9.25</value>
+	</property>
+	<property>
+		<name>mongodb.port</name>
+		<value>27017</value>
+	</property>
+	<property>
+		<name>mongodb.db</name>
+		<value>nutch</value>
+	</property>
 	
 	
 </configuration>

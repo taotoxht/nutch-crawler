@@ -59,6 +59,7 @@ import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.sun.org.apache.xpath.internal.XPathAPI;
 
@@ -465,7 +466,7 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 		}
 
 		// img fetch and persist
-		for (CrawlData crawlData : crawlDatas) {
+		/*for (CrawlData crawlData : crawlDatas) {
 			if (ValueType.img.equals(crawlData.getType()) && StringUtils.isNotBlank(crawlData.getTextValue())) {
 				if (imgSaveRootDir == null) {
 					imgSaveRootDir = getConf().get("parse.img.save.dir");
@@ -498,7 +499,7 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 					LOG.error("Error to img process", e);
 				}
 			}
-		}
+		}*/
 
 		if ("jdbc".equalsIgnoreCase(persistMode)) {
 			Connection conn = null;
@@ -579,6 +580,9 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 				DBCollection coll = db.getCollection("crawl_data");
 				BasicDBObject bo = new BasicDBObject("url", url).append("fetch_time", new Date());
 				LOG.debug("Saving properties for url: {}", url);
+				//先shanchu  
+				coll.remove(bo);
+				
 				for (CrawlData crawlData : crawlDatas) {
 					if (!crawlData.getUrl().equals(url)) {
 						LOG.error("Invalid crawlData not match url: {}", url);
