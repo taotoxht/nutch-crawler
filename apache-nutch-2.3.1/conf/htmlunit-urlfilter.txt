@@ -50,14 +50,14 @@
 -^http://www.jumei.com/i/ajax/get_keyword_pro
 -^http://eclick.baidu.com
 
-################## www.scjtaq.com ###################
--\.js
--^http://c.cnzz.com
--^http://m.weather.com.cn
--^http://hzs16.cnzz.com
 
-################## jt.cpd.com.cn ###################
--\.js
+
+
+################## elong htmlunit 排除 ###################
+-^http://www.elongstatic.com/web/hotel/views/list/list.js.*
+-^http://www.elongstatic.com.*
+-^http://www.googleadservices.com.*
+-^http://material.mediav.com/bjjs/mba_ka.js.* 
 -^http://.*#.*
 -^http://jt.cpd.com.cn/template
 -^http://.*.baidu.com/.*

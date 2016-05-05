@@ -1,9 +1,14 @@
 package org.apache.nutch.protocol.htmlunit;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.nutch.util.NutchConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +59,7 @@ public class HttpWebClient {
                     webClient.setCache(new ExtHtmlunitCache());
                     // Enhanced WebConnection based on urlfilter
                     webClient.setWebConnection(new RegexHttpWebConnection(webClient, conf));
-                    webClient.waitForBackgroundJavaScript(600 * 1000);
+                    webClient.waitForBackgroundJavaScript(10000);
                     //设置足够高度以支持一些需要页面内容多需屏幕滚动显示的页面
 //                    webClient.getCurrentWindow().setInnerHeight(6000);
                     webClient.getCurrentWindow().setInnerHeight(20000);
@@ -75,8 +80,27 @@ public class HttpWebClient {
         return (HtmlPage) getPage(url, conf,proxyHost,proxyPort);
     }
 
-    public static void main(String[] args) {
-        HtmlPage page = getHtmlPage("http://www.jumeiglobal.com/deal/ht150312p1286156t1.html", null,null,0);
-        System.out.println(page.asXml());
+    public static void main(String[] args) throws InterruptedException, IOException {
+    	// 测试 代理可行
+    	Configuration conf = NutchConfiguration.create();
+        HtmlPage page = getHtmlPage("http://hotel.elong.com/baoding/", conf,"192.168.11.54",8888);
+//        HtmlPage page = getHtmlPage("http://hotel.elong.com/guangzhou/32001026", conf,"192.168.11.54",8888);
+//        HtmlPage page = getHtmlPage("http://192.168.9.21:8080/ycf-search/solr/vproduct/search?keyWord=%E5%B9%BF%E5%B7%9E", null,"192.168.11.54",8888);
+        String html= page.asXml();
+        FileUtils.write(new File("/data/sss"), html);
+        if(html.indexOf("保定好时运美景酒店")>=0){
+        	System.out.println("解析成功");
+        }else{
+        	System.out.println("解析失败");
+        }
+        TimeUnit.SECONDS.sleep(10);
+        
+        
+//        if( html.indexOf("ht_pri_num") > 0 &&  html.indexOf("hmap_info_wrap") > 0){
+//        	System.out.println("解析成功");
+//        }else{
+//        	System.out.println("解析失败");
+//        }
+       
     }
 }

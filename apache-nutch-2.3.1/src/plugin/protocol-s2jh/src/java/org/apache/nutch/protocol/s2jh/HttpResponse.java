@@ -474,11 +474,11 @@ public class HttpResponse implements Response {
     	if(StringUtils.isNotEmpty(proxyHost)){
     		
     		argList.add("--proxy="+proxyHost+":"+proxyPort);
-    		argList.add("--proxy-type=socks5");
+    		argList.add("--proxy-type=http");
 //    		argList.add("--proxy=http://"+"127.0.0.1"+":"+proxyPort);
 //    		argList.add("--proxy-type=http");
     	}
-    	profile.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,argList.toArray() );
+    	profile.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,argList);
     	driver = new PhantomJSDriver(profile);
 		return driver;
 	}
@@ -763,6 +763,33 @@ public class HttpResponse implements Response {
         int value = in.read();
         in.unread(value);
         return value;
+    }
+    
+    public static void main(String[] args) {
+    	WebDriver driver = null;
+    	DesiredCapabilities profile = new DesiredCapabilities();
+    	profile.setCapability("phantomjs.binary.path","/opt/phantomjs/phantomjs-2.1.1-linux-x86_64/phantomjs-2.1.1-linux-x86_64/bin/phantomjs");
+    	profile.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "userAgent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36");
+    	profile.setJavascriptEnabled(true);
+    	// Disable "web-security", enable all possible "ssl-protocols" and "ignore-ssl-errors" for PhantomJSDriver
+    	//and proxy
+    	List<String> argList=new ArrayList<>();
+    	argList.add("--web-security=false");
+    	argList.add("--ssl-protocol=any");
+    	argList.add("--ignore-ssl-errors=true");
+    	argList.add("--webdriver-loglevel=INFO");
+    	if(StringUtils.isNotEmpty("127.0.0.1")){
+//    		argList.add("--proxy="+"192.168.11.54"+":"+8888);
+//    		argList.add("--proxy-type=http");
+//    		argList.add("--proxy=http://"+"127.0.0.1"+":"+proxyPort);
+//    		argList.add("--proxy-type=http");
+    	}
+    	profile.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,argList);
+    	driver = new PhantomJSDriver(profile);
+        driver.get("http://192.168.9.21:8080/ycf-search/solr/vproduct/search");
+//        driver.get("http://hotel.elong.com/guangzhou/32001026/#review");
+        String html = driver.getPageSource().trim();
+        System.out.println(html);
     }
 
 }
