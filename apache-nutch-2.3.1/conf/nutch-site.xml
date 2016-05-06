@@ -6,7 +6,7 @@
 <configuration>
     <!--此参数主要用于在IDE环境开发模式运行，在构建输出的runtime部署运行请注释或删除此项参数-->
     <!-- Just for development, please remove this plugin.folders for production env -->
-     <!--  <property>
+    <!--   <property>
         <name>plugin.folders</name>
         <value>./src/plugin</value>
     </property>  -->
@@ -146,6 +146,12 @@
         <name>generate.batch.id</name>
         <value>*</value>
     </property>
+    
+    <property>
+	  <name>http.timeout</name>
+	  <value>2000</value>
+	  <description>The default network timeout, in milliseconds.</description>
+	</property>
     
     <!-- 代理配置 -->
 	<property>

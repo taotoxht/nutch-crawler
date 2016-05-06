@@ -63,6 +63,7 @@ public class HttpWebClient {
                     //设置足够高度以支持一些需要页面内容多需屏幕滚动显示的页面
 //                    webClient.getCurrentWindow().setInnerHeight(6000);
                     webClient.getCurrentWindow().setInnerHeight(20000);
+                    webClient.getOptions().setTimeout(5000);
                     if (acceptLanguage == null && conf != null) {
                         acceptLanguage = conf.get("http.accept.language", " zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3");
                     }

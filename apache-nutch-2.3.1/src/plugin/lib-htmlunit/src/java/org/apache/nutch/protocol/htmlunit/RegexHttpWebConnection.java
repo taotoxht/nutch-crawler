@@ -33,7 +33,7 @@ public class RegexHttpWebConnection extends HttpWebConnection {
     public static final Logger FILE_LOG = LoggerFactory.getLogger("file");
 
     /** An array of applicable rules */
-    private List<Rule> rules;
+    private static List<Rule> rules;
 
     public RegexHttpWebConnection(WebClient webClient) {
         super(webClient);
@@ -43,7 +43,13 @@ public class RegexHttpWebConnection extends HttpWebConnection {
         super(webClient);
         if (conf != null) {
             try {
-                rules = readRules(getRulesReader(conf));
+            	if(rules == null){
+            		synchronized (RegexHttpWebConnection.class) {
+						if(rules == null){
+							 rules = readRules(getRulesReader(conf));
+						}
+					}
+            	}
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

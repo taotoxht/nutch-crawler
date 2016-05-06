@@ -360,7 +360,9 @@ public class HttpResponse implements Response {
     }
 
     private boolean readPlainContentByHtmlunit(URL url,String proxyHost,int proxyPort) throws Exception {
-
+    	
+    	long inst = System.currentTimeMillis();
+    	
         String urlStr = url.toString();
         if (urlStr.indexOf("detail.tmall.com") > -1) {
             return false;
@@ -394,6 +396,8 @@ public class HttpResponse implements Response {
             Http.LOG.warn("Failure Htmlunit parse page for: {}", url);
             Http.LOG.warn("Htmlunit Fetch Failure URL: " + url + ", CharsetName: " + charset + " , Page HTML=\n" + html);
         }
+        long ined = System.currentTimeMillis();
+        Http.LOG.warn("readPlainContentByHtmlunit time elapsed : {}", (ined-inst)/1000);
         return ok;
     }
 
@@ -405,7 +409,7 @@ public class HttpResponse implements Response {
      * @throws Exception
      */
     private void readPlainContentByWebDriver(URL url,String proxyHost,int proxyPort,String webDriverPath) throws Exception {
-
+    	long inst = System.currentTimeMillis();
         String urlStr = url.toString();
         Http.LOG.debug("WebDriver fetching: " + url);
         String html = null;
@@ -440,7 +444,7 @@ public class HttpResponse implements Response {
                 driver.quit();
             }
         }
-
+        
         if (ok) {
             Http.LOG.debug("Success parse page by WebDriver  for: {}", url);
             this.code = 200;
@@ -455,6 +459,9 @@ public class HttpResponse implements Response {
             Http.LOG.warn("Failure WebDriver parse page for: {}", url);
             Http.LOG.warn("WebDriver Fetch Failure URL: " + url + ", CharsetName: " + charset + " , Page HTML=\n" + html);
         }
+        long ined = System.currentTimeMillis();
+        Http.LOG.warn("readPlainContentByWebDriver time elapsed : {}", (ined-inst)/1000);
+        
     }
 
     private WebDriver createPhantomjsDriver(String proxyHost, int proxyPort,
@@ -479,7 +486,10 @@ public class HttpResponse implements Response {
 //    		argList.add("--proxy-type=http");
     	}
     	profile.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,argList);
+    	profile.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX+"loadImages ", false);
+    	profile.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX+"resourceTimeout  ", 1000*2);
     	driver = new PhantomJSDriver(profile);
+    	driver.
 		return driver;
 	}
 

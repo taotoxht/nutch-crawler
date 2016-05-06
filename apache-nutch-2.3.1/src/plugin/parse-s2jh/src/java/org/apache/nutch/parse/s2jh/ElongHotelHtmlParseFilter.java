@@ -188,12 +188,12 @@ public class ElongHotelHtmlParseFilter extends AbstractHtmlParseFilter {
 
     @Override
     protected boolean isParseDataFetchLoadedInternal(String url, String html) {	
-
-  	if(html.indexOf("ht_pri_num") > 0 &&  html.indexOf("hmap_info_wrap") > 0){	
-    		return true;
-    	}else{
-    		return false;
-    	}
+    	return true;	
+//  	if(html.indexOf("ht_pri_num") > 0 &&  html.indexOf("hmap_info_wrap") > 0){	
+//    		return true;
+//    	}else{
+//    		return false;
+//    	}
     }
 
     @Override
