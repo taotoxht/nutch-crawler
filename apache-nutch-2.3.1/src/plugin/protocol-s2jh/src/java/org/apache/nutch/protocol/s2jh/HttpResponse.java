@@ -489,7 +489,6 @@ public class HttpResponse implements Response {
     	profile.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX+"loadImages ", false);
     	profile.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX+"resourceTimeout  ", 1000*2);
     	driver = new PhantomJSDriver(profile);
-    	driver.
 		return driver;
 	}
 
