@@ -1,1 +1,3 @@
-http://hotel.elong.com/shangqiu/90210667/
+#http://hotel.elong.com/shangqiu/90210667/
+#http://hotel.elong.com/beijing/00101120/
+http://toutiao.com/

@@ -577,7 +577,9 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 				MongoClient mongoClient = new MongoClient(conf.get("mongodb.host"),
 						Integer.valueOf(conf.get("mongodb.port")));
 				DB db = mongoClient.getDB(conf.get("mongodb.db"));
-				DBCollection coll = db.getCollection("crawl_data");
+				//改由子类定义具体的表名称
+//				DBCollection coll = db.getCollection("crawl_data");
+				DBCollection coll = db.getCollection(getTableName());
 				BasicDBObject bo = new BasicDBObject("url", url).append("fetch_time", new Date());
 				LOG.debug("Saving properties for url: {}", url);
 				//先shanchu  
@@ -596,6 +598,14 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 				LOG.error(e.getMessage(), e);
 			}
 		}
+	}
+
+	/**
+	 * 定义 存储 结果的表名
+	 * @return
+	 */
+	public  String getTableName(){
+		return "crawl_data";
 	}
 
 	@Override

@@ -200,4 +200,9 @@ public class ElongHotelHtmlParseFilter extends AbstractHtmlParseFilter {
     protected boolean isContentMatchedForParse(String url, String html) {
         return true;
     }
+    
+    @Override
+    public String getTableName() {
+    	return "crawl_data_elong";
+    }
 }

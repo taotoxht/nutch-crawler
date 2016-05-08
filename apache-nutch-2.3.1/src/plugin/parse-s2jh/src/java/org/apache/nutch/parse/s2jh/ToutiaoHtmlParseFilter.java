@@ -17,35 +17,22 @@ import com.google.common.collect.Lists;
  * @author EMAIL:s2jh-dev@hotmail.com , QQ:2414521719
  *
  */
-public class VipHtmlParseFilter extends AbstractHtmlParseFilter {
+public class ToutiaoHtmlParseFilter extends AbstractHtmlParseFilter {
 
-    public static final Logger LOG = LoggerFactory.getLogger(VipHtmlParseFilter.class);
+    public static final Logger LOG = LoggerFactory.getLogger(ToutiaoHtmlParseFilter.class);
 
     @Override
     public Parse filterInternal(String url, WebPage page, Parse parse, HTMLMetaTags metaTags, DocumentFragment doc) {
         List<CrawlData> crawlDatas = Lists.newArrayList();
-
-        crawlDatas.add(new CrawlData(url, "title", "商品名称").setTextValue(getXPathValue(doc, "//DIV[@class='pib-title']/P[@class='pib-title-detail']"),
+        crawlDatas.add(new CrawlData(url, "title", "新闻名称").setTextValue(getXPathValue(doc, "//ul[@data-node='listBox']/li[1]//a[@ga_event='click_feed_newstitle']"),
                 page));
-        crawlDatas.add(new CrawlData(url, "price", "价格").setTextValue(getXPathValue(doc, "//SPAN[@class='pbox-price']/EM"), page));
-
-        saveCrawlData(url, crawlDatas, page);
-
-        // 用于网页内容索引的页面内容，一般是去头去尾处理后的有效信息内容
-        String txt = getXPathValue(doc, "//DIV[@class='FW-wrap fwr']");
-        if (StringUtils.isNotBlank(txt)) {
-            parse.setText(txt);
-        } else {
-            LOG.warn("NO data parased");
-        }
-
+        	saveCrawlData(url, crawlDatas, page);
         return parse;
     }
 
     @Override
     public String getUrlFilterRegex() {
-        //http://www.vip.com/detail-371486-48229111.html
-        return "http://www.vip.com/detail-\\d*-\\d*.html";
+        return "http://toutiao.com/";
     }
 
     @Override
