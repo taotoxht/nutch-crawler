@@ -1,6 +1,7 @@
 package org.apache.nutch.parse.s2jh;
 
 import java.util.List;
+
 import org.apache.nutch.parse.HTMLMetaTags;
 import org.apache.nutch.parse.Parse;
 import org.apache.nutch.storage.WebPage;
@@ -9,13 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
 import com.google.common.collect.Lists;
 /**
  * 
  * @author EMAIL:s2jh-dev@hotmail.com , QQ:2414521719
  *
  */
-public class ElongHotelHtmlParseFilter extends AbstractHtmlParseFilter {
+public class ElongHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter {
 
     public static final Logger LOG = LoggerFactory.getLogger(ElongHotelHtmlParseFilter.class);
 
@@ -23,7 +25,7 @@ public class ElongHotelHtmlParseFilter extends AbstractHtmlParseFilter {
     public Parse filterInternal(String url, WebPage page, Parse parse, HTMLMetaTags metaTags, DocumentFragment doc) throws Exception {
   	
     	List<CrawlData> crawlDatas = Lists.newArrayList();
-        crawlDatas.add(new CrawlData(url, "domain", "域名").setTextValue("elong.com", page));
+//        crawlDatas.add(new CrawlData(url, "domain", "域名").setTextValue("elong.com", page));
 
         if (url.startsWith("http://hotel.elong.com/")){	
         	/*酒景名称*/
@@ -178,10 +180,14 @@ public class ElongHotelHtmlParseFilter extends AbstractHtmlParseFilter {
         FROM crawl_data GROUP BY url,fetch_time
          */
         saveCrawlData(url, crawlDatas, page);
+        
+        //添加数据 到 汇总表
+        mergeCrawlDataToMongo(url, crawlDatas);
+        
         return parse;
     }
-
-    @Override
+    
+	@Override
     public String getUrlFilterRegex() {
     	return "^http://hotel.elong.com/.+/\\d+/?.*$";
     }

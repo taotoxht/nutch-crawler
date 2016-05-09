@@ -79,7 +79,7 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 
 	protected Transformer transformer;
 
-	private Configuration conf;
+	protected Configuration conf;
 
 	private static String imgSaveRootDir;
 
@@ -89,7 +89,7 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 
 	private boolean useProxyPool;
 	private ProxyIpPool proxyIpPool;
-	private int crawlVersion;
+	protected int crawlVersion;
 
 	public AbstractHtmlParseFilter() {
 		String filterRegex = getUrlFilterRegex();
