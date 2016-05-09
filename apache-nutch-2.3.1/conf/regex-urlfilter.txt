@@ -75,3 +75,5 @@
 #-^http://hotel.elong.com/.*.html
 +^http://hotel.elong.com/.+/\d+/?$
 #+.*
+################ toutiao.com ######################
++^http://toutiao.com/
