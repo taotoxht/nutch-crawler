@@ -1,8 +1,10 @@
 package org.apache.nutch.parse.s2jh;
 
-import java.io.File;
+import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,7 +24,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.html.dom.HTMLDocumentImpl;
@@ -30,12 +31,10 @@ import org.apache.nutch.parse.HTMLMetaTags;
 import org.apache.nutch.parse.Parse;
 import org.apache.nutch.parse.ParseFilter;
 import org.apache.nutch.parse.html.DOMBuilder;
-import org.apache.nutch.parse.s2jh.CrawlData.ValueType;
 import org.apache.nutch.plugin.Extension;
 import org.apache.nutch.plugin.ExtensionPoint;
 import org.apache.nutch.plugin.PluginRepository;
 import org.apache.nutch.plugin.PluginRuntimeException;
-import org.apache.nutch.protocol.htmlunit.HttpWebClient;
 import org.apache.nutch.protocol.htmlunit.ProxyIpPool;
 import org.apache.nutch.storage.WebPage;
 import org.apache.nutch.storage.WebPage.Field;
@@ -43,7 +42,6 @@ import org.apache.nutch.util.StringUtil;
 import org.cyberneko.html.parsers.DOMFragmentParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -54,12 +52,10 @@ import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.gargoylesoftware.htmlunit.Page;
 import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.sun.org.apache.xpath.internal.XPathAPI;
 
@@ -76,7 +72,7 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 																	// of
 																	// fetcher
 																	// run
-
+	
 	private AtomicInteger pages = new AtomicInteger(0); // total pages fetched
 
 	private Pattern filterPattern;
@@ -93,6 +89,7 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 
 	private boolean useProxyPool;
 	private ProxyIpPool proxyIpPool;
+	private int crawlVersion;
 
 	public AbstractHtmlParseFilter() {
 		String filterRegex = getUrlFilterRegex();
@@ -124,6 +121,15 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 		this.useProxyPool = conf.getBoolean("http.useProxyPool", false);
 		if (useProxyPool) {
 			proxyIpPool = ProxyIpPool.getSingleton(conf);
+		}
+		//读取版本值 保存数据时候用到
+		DataInputStream  in = new DataInputStream(conf.getConfResourceAsInputStream("crawlVersion.txt"));
+		try {
+			this.crawlVersion = in.readInt();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			this.crawlVersion  = 1;
 		}
 
 	}
@@ -500,7 +506,10 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 				}
 			}
 		}*/
-
+		//添加版本
+		CrawlData crawlVersion = new CrawlData(url, "crawlVersion");
+		crawlVersion.setNumValue(Integer.toString(this.crawlVersion));
+		crawlDatas.add(crawlVersion);
 		if ("jdbc".equalsIgnoreCase(persistMode)) {
 			Connection conn = null;
 			try {
@@ -578,10 +587,13 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 						Integer.valueOf(conf.get("mongodb.port")));
 				DB db = mongoClient.getDB(conf.get("mongodb.db"));
 				DBCollection coll = db.getCollection("crawl_data");
-				BasicDBObject bo = new BasicDBObject("url", url).append("fetch_time", new Date());
+				BasicDBObject bo = new BasicDBObject("url", url).append("crawlVersion", this.crawlVersion);
+				
 				LOG.debug("Saving properties for url: {}", url);
 				//先shanchu  
 				coll.remove(bo);
+				
+				bo.append("fetch_time", System.currentTimeMillis());
 				
 				for (CrawlData crawlData : crawlDatas) {
 					if (!crawlData.getUrl().equals(url)) {
