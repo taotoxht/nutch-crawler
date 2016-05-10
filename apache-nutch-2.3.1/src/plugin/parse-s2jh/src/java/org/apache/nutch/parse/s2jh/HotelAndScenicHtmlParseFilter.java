@@ -5,13 +5,16 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.nutch.storage.WebPage;
+import org.elasticsearch.common.collect.Maps;
 
 import ch.epfl.lamp.fjbg.JConstantPool.Entry;
 
+import com.clearspring.analytics.util.Lists;
 import com.ibm.icu.math.BigDecimal;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 /**
@@ -94,10 +97,10 @@ public abstract class HotelAndScenicHtmlParseFilter extends
 			}
 			return;
 		}
-
 		// 添加版本
+		MongoClient mongoClient =null;
 		try {
-			MongoClient mongoClient = new MongoClient(conf.get("mongodb.host"),
+			mongoClient = new MongoClient(conf.get("mongodb.host"),
 					Integer.valueOf(conf.get("mongodb.port")));
 			DB db = mongoClient.getDB(conf.get("mongodb.db"));
 
@@ -123,9 +126,10 @@ public abstract class HotelAndScenicHtmlParseFilter extends
 			
 			updateMergeTable(db,bo);
 			
-			mongoClient.close();
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
+		}finally{
+			mongoClient.close();
 		}
 
 	}
@@ -145,11 +149,48 @@ public abstract class HotelAndScenicHtmlParseFilter extends
 		if (defDataSrc.equals(getDataSrc())) {
 			// 携程 的酒店 或景区
 			coll.insert(bo);
-			
 		} else {
-			
+			//非携程的酒店 不存在才更新
+			if(!existsInMergeDB(coll, bo.getString("dbResName"), bo.getString("ResAddress"),bo.getString("ResTelephone"))){
+				coll.insert(bo);
+			}
 		}
+	}
+
+	/**
+	 * 判断合并数据库是否存在该记录
+	 * 
+	 * @param DBCollection  表操作
+	 * @param ResName 酒景名称
+	 * @param ResAddress 地址
+	 * @param ResTelephone 电话
+	 *
+	 * @return
+	 */
+	private boolean existsInMergeDB(DBCollection coll,String ResName, String ResAddress,
+			String ResTelephone) {
+		//{"$or":[{"ResName":"xxx", "ResAddress":"xxxx"}, {"ResName":"xxx","ResTelephone":"xxx"},{"ResAddress":"xxx","ResTelephone":"xxx"}]}
+		Map<String,Object> map =Maps.newHashMap();
+		map.put("ResName", ResName);
+		map.put("ResAddress", ResAddress);
+		map.put("ResTelephone", ResTelephone);
 		
+		List<String> list = Lists.newArrayList();
+		list.add("ResName");
+		list.add("ResAddress");
+		list.add("ResTelephone");
+		Map<String,Object> temp = null;
+		List<Map<String,Object>> arr = Lists.newArrayList();
+		for(int i=0;i<list.size();i++){
+			temp = Maps.newHashMap(map);
+			temp.remove(list.get(i));
+			arr.add(temp);
+		}
+		Map<String,Object> mapParam =Maps.newHashMap();
+		mapParam.put("$or", arr);
+		DBObject param = new BasicDBObject();
+		param.putAll(mapParam);
+		return coll.findOne(param) != null;
 	}
 
 	/**
