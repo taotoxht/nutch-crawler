@@ -1,10 +1,6 @@
 package org.apache.nutch.parse.s2jh;
 
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
+import java.io.BufferedReader;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -123,10 +119,10 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 			proxyIpPool = ProxyIpPool.getSingleton(conf);
 		}
 		//读取版本值 保存数据时候用到
-		DataInputStream  in = new DataInputStream(conf.getConfResourceAsInputStream("crawlVersion.txt"));
+		BufferedReader  in = new BufferedReader(conf.getConfResourceAsReader("crawlVersion.txt"));
 		try {
-			this.crawlVersion = in.readInt();
-		} catch (IOException e) {
+			this.crawlVersion = Integer.parseInt(in.readLine());
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			this.crawlVersion  = 1;

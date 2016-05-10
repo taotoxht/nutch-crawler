@@ -215,7 +215,7 @@
 	</property>
 	<property>
 		<name>mongodb.host</name>
-		<value>192.168.1.105</value>
+		<value>192.168.9.25</value>
 	</property>
 	<property>
 		<name>mongodb.port</name>

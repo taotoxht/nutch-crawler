@@ -1,15 +1,13 @@
 package org.apache.nutch.parse.s2jh;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.nutch.storage.WebPage;
-import org.elasticsearch.common.collect.Maps;
 
-import ch.epfl.lamp.fjbg.JConstantPool.Entry;
-
-import com.clearspring.analytics.util.Lists;
 import com.ibm.icu.math.BigDecimal;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -122,7 +120,7 @@ public abstract class HotelAndScenicHtmlParseFilter extends
 				}
 				bo.append(crawlData.getKey(), crawlData.getValue());
 			}
-			coll.update(new BasicDBObject("url", url), bo, true, false);
+			coll.update(new BasicDBObject("url", url).append("crawlVersion", this.crawlVersion), bo, true, false);
 			
 			updateMergeTable(db,bo);
 			
@@ -170,23 +168,23 @@ public abstract class HotelAndScenicHtmlParseFilter extends
 	private boolean existsInMergeDB(DBCollection coll,String ResName, String ResAddress,
 			String ResTelephone) {
 		//{"$or":[{"ResName":"xxx", "ResAddress":"xxxx"}, {"ResName":"xxx","ResTelephone":"xxx"},{"ResAddress":"xxx","ResTelephone":"xxx"}]}
-		Map<String,Object> map =Maps.newHashMap();
+		Map<String,Object> map =new HashMap<String,Object>();
 		map.put("ResName", ResName);
 		map.put("ResAddress", ResAddress);
 		map.put("ResTelephone", ResTelephone);
 		
-		List<String> list = Lists.newArrayList();
+		List<String> list = new ArrayList<String>();
 		list.add("ResName");
 		list.add("ResAddress");
 		list.add("ResTelephone");
 		Map<String,Object> temp = null;
-		List<Map<String,Object>> arr = Lists.newArrayList();
+		List<Map<String,Object>> arr = new ArrayList<Map<String,Object>>();
 		for(int i=0;i<list.size();i++){
-			temp = Maps.newHashMap(map);
+			temp = new HashMap<String,Object>(map);
 			temp.remove(list.get(i));
 			arr.add(temp);
 		}
-		Map<String,Object> mapParam =Maps.newHashMap();
+		Map<String,Object> mapParam =new HashMap<String,Object>();
 		mapParam.put("$or", arr);
 		DBObject param = new BasicDBObject();
 		param.putAll(mapParam);
