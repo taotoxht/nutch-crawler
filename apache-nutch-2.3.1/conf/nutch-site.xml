@@ -223,7 +223,7 @@
 	</property>
 	<property>
 		<name>mongodb.db</name>
-		<value>nutch_xuht</value>
+		<value>nutch</value>
 	</property>
 	
 </configuration>
