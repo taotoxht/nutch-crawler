@@ -1,2 +1,3 @@
-http://hotel.elong.com/shangqiu/90210667/
+#http://hotel.elong.com/shangqiu/90210667/
 #http://hotel.elong.com/beijing/00101120/
+http://hotels.ctrip.com/hotel/434938.html#ctm_ref=hod_sr_lst_dl_n_1_1

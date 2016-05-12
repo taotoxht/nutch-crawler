@@ -44,9 +44,11 @@
 	 <implementation id="elongHotelHtmlParseFilter"
                       class="org.apache.nutch.parse.s2jh.ElongHotelHtmlParseFilter">
       </implementation>
-       <implementation id="toutiaoHtmlParseFilter"
-                      class="org.apache.nutch.parse.s2jh.ToutiaoHtmlParseFilter">
+       <implementation id="ctripHotelHtmlParseFilter"
+                      class="org.apache.nutch.parse.s2jh.CtripHotelHtmlParseFilter">
       </implementation>
+
+		
 	   <!--
       <implementation id="qunarHtmlParseFilter"
                       class="org.apache.nutch.parse.s2jh.QunarHtmlParseFilter">
