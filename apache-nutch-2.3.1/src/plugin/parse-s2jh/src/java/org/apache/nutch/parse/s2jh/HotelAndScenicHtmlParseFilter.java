@@ -50,30 +50,6 @@ public abstract class HotelAndScenicHtmlParseFilter extends
 		return false;
 	}
 
-	public void mergeCrawlDataToMongo(String url, List<CrawlData> crawlDatas) {
-		MongoClient mongoClient = null;
-		try {
-
-			mongoClient = new MongoClient(conf.get("mongodb.host"),
-					Integer.valueOf(conf.get("mongodb.port")));
-			DB db = mongoClient.getDB(conf.get("mongodb.db"));
-
-			// 改由子类定义具体的表名称
-			// DBCollection coll = db.getCollection("crawl_data");
-			DBCollection coll = db.getCollection(mergeTableName);
-			BasicDBObject bo = new BasicDBObject("url", url);
-			bo = (BasicDBObject) coll.findOne(bo);
-			
-
-			LOG.debug("Saving properties for url: {}", url);
-
-		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
-		} finally {
-			mongoClient.close();
-		}
-
-	}
 
 	/**
 	 * 属性持久化处理，基于nutch-site.xml中parse.data.persist.mode定义值
@@ -109,7 +85,7 @@ public abstract class HotelAndScenicHtmlParseFilter extends
 					"crawlVersion", this.crawlVersion);
 			LOG.debug("Saving properties for url: {}", url);
 			// 先shanchu
-			coll.remove(bo);
+//			coll.remove(bo);
 
 			bo.append("fetch_time", System.currentTimeMillis());
 
@@ -198,23 +174,36 @@ public abstract class HotelAndScenicHtmlParseFilter extends
 	 * @return
 	 */
 	protected String hasModifiedToLastVersion(DBCollection coll, BasicDBObject bo) {
-		StringBuilder result = new StringBuilder();
+		
 		String retVal = null;
-		BigDecimal o = (BigDecimal) bo.remove("crawlVersion");
+		int o = (int) bo.remove("crawlVersion");
+		long fetchTIme = (long) bo.remove("fetch_time");
 		BasicDBObject last = (BasicDBObject) coll.findOne(bo);
 		if(last == null){
 			//有变更
-			last = (BasicDBObject) coll.findOne(new BasicDBObject("url", last.getString("url")));
-			Map<String,Object> map = last.toMap();
-			
-			for(java.util.Map.Entry<String, Object> entry: map.entrySet()){
-				if(!entry.getValue().equals(bo.get(entry.getKey()))){
-					result.append(entry.getKey()).append("##");
+			last = (BasicDBObject) coll.findOne(new BasicDBObject("url", bo.getString("url")));
+			Map<String,Object> map = null;
+			if( last == null){
+				map	= new HashMap<>(1);
+				retVal = "all";
+			}else{
+				StringBuilder result = new StringBuilder();
+				map = last.toMap();
+				for(java.util.Map.Entry<String, Object> entry: bo.entrySet()){
+					if("fetch_time".equals(entry.getKey())){
+						continue;
+					}
+					if(!entry.getValue().equals(map.get(entry.getKey()))){
+						result.append(entry.getKey()).append("##");
+					}
+				}
+				if(result.length()>0){
+					retVal = result.substring(0, result.length()-2);
 				}
 			}
-			if(result.length()>0){
-				retVal = result.substring(0, result.length()-2);
-			}
+			
+			
+			
 			
 		}
 		bo.append("crawlVersion", o);

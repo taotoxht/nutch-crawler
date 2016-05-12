@@ -629,10 +629,14 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 	/**
 	 * 帮助类方法：获取当前所有配置的自定义过滤器集合
 	 * 
+	 * 
 	 * @param conf
 	 * @return
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public static AbstractHtmlParseFilter[] getParseFilters(Configuration conf) {
+	public static AbstractHtmlParseFilter[] getParseFilters(Configuration conf)  {
 		LOG.error("taotoxht log: getParseFilters start");
 		// Prepare parseFilters
 		String order = conf.get(HTMLPARSEFILTER_ORDER);
@@ -654,9 +658,14 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 				LOG.error("taotoxht log: getParseFilters  extensions size: "+extensions.length);
 				for (int i = 0; i < extensions.length; i++) {
 					Extension extension = extensions[i];
-					ParseFilter parseFilter = (ParseFilter) extension.getExtensionInstance();
+				
+//					ParseFilter parseFilter = (ParseFilter)extension.getExtensionInstance();
+					ParseFilter parseFilter = (ParseFilter)Class.forName( extension.getClazz()).newInstance();
+					LOG.error("taotoxht log: parseFilter load by  : "+parseFilter.getClass().getClassLoader());
+					LOG.error("taotoxht log: AbstractHtmlParseFilter load by  : "+AbstractHtmlParseFilter.class.getClassLoader());
+					
 					//这里 命令行下执行 parseFilter 和 AbstractHtmlParseFilter类加载器 不同 不能用 instanceof
-					if (parseFilter.getClass().getSuperclass().getName().equals(AbstractHtmlParseFilter.class.getName())) {
+					if (parseFilter instanceof AbstractHtmlParseFilter) {
 						if (!filterMap.containsKey(parseFilter.getClass().getName())) {
 							filterMap.put(parseFilter.getClass().getName(), (AbstractHtmlParseFilter) parseFilter);
 						}
@@ -674,13 +683,13 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 					}
 					parseFilters = filters.toArray(new AbstractHtmlParseFilter[filters.size()]);
 				}
-			} catch (PluginRuntimeException e) {
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 		return parseFilters;
 	}
-
+	
 	/**
 	 * 判断url是否符合自定义解析匹配规则
 	 * 
