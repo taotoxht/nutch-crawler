@@ -45,8 +45,13 @@ import org.apache.nutch.metadata.Metadata;
 import org.apache.nutch.metadata.SpellCheckedMetadata;
 import org.apache.nutch.net.protocols.HttpDateFormat;
 import org.apache.nutch.net.protocols.Response;
+import org.apache.nutch.parse.ParseFilter;
 import org.apache.nutch.parse.s2jh.AbstractHtmlParseFilter;
 import org.apache.nutch.parse.s2jh.HtmlParseFilterHelper;
+import org.apache.nutch.plugin.Extension;
+import org.apache.nutch.plugin.ExtensionPoint;
+import org.apache.nutch.plugin.PluginDescriptor;
+import org.apache.nutch.plugin.PluginRepository;
 import org.apache.nutch.protocol.ProtocolException;
 import org.apache.nutch.protocol.htmlunit.HttpWebClient;
 import org.apache.nutch.protocol.htmlunit.ProxyIpPool;
@@ -523,6 +528,7 @@ public class HttpResponse implements Response {
      * @return
      * @throws IllegalAccessException 
      * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
      */
 //    private boolean isParseDataFetchLoaded(String url, String html) {
 //        boolean ok = true;
@@ -542,15 +548,23 @@ public class HttpResponse implements Response {
 //        }
 //        return ok;
 //    }
-    private boolean isParseDataFetchLoaded(String url, String html) throws InstantiationException, IllegalAccessException {
+    private boolean isParseDataFetchLoaded(String url, String html) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 	    boolean ok = true;
-	  
-//	    AbstractHtmlParseFilter[] parseFilters = AbstractHtmlParseFilter.getParseFilters(conf);
-	    AbstractHtmlParseFilter[] parseFilters = HtmlParseFilterHelper.getParseFilters("org.apache.nutch.parse.s2jh");
+	    PluginRepository pluginRepository = PluginRepository.get(conf);
+	    PluginDescriptor pd = pluginRepository.getPluginDescriptor("parse-s2jh");
+	    ClassLoader oldClazzLoader = Thread.currentThread().getContextClassLoader();
+	    Http.LOG.error("taotoxht oldClazzLoader , ",oldClazzLoader.toString());
+	    Thread.currentThread().setContextClassLoader(pd.getClassLoader());
+	    Http.LOG.error("taotoxht newClazzLoader , ",pd.getClassLoader());
+	    AbstractHtmlParseFilter[] parseFilters = AbstractHtmlParseFilter.getParseFilters(conf);
+	    Http.LOG.error("taotoxht AbstractHtmlParseFilter.class loaded by  , ",AbstractHtmlParseFilter.class.getClassLoader());
+	    Thread.currentThread().setContextClassLoader(oldClazzLoader);
+//	    AbstractHtmlParseFilter[] parseFilters = HtmlParseFilterHelper.getParseFilters("org.apache.nutch.parse.s2jh");
 	    Http.LOG.error("Invoke isParseDataFetchLoaded , parseFilters length {} , ", parseFilters.length);
 	    if (parseFilters != null) {
 	        for (AbstractHtmlParseFilter htmlParseFilter : parseFilters) {
 	            Boolean ret = htmlParseFilter.isParseDataFetchLoaded(url, html);
+	            System.out.println(html);
 	            Http.LOG.debug("Invoke isParseDataFetchLoaded of {} , return : {}", htmlParseFilter.getClass(), ret);
 	            //Any one return NOT loaded, break and return flase
 	            if (ret == false) {

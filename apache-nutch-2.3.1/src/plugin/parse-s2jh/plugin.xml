@@ -27,6 +27,9 @@
       </library>
       <library name="tagsoup-1.2.jar"/>
       <library name="xalan-2.7.1.jar"/>      
+      <library name="mongo-java-driver-3.2.2.jar">
+         <export name="*"/>
+      </library> 
    </runtime>
 
    <requires>
