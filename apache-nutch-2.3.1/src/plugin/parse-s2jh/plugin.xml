@@ -50,7 +50,9 @@
        <implementation id="ctripHotelHtmlParseFilter"
                       class="org.apache.nutch.parse.s2jh.CtripHotelHtmlParseFilter">
       </implementation>
-
+       <implementation id="ctripPiaoHtmlParseFilter"
+                      class="org.apache.nutch.parse.s2jh.CtrpPiaoHtmlParseFilter">
+     </implementation>
 		
 	   <!--
       <implementation id="qunarHtmlParseFilter"

@@ -207,7 +207,7 @@ public class ElongHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter {
         FROM crawl_data GROUP BY url,fetch_time
          */
         saveCrawlData(url, crawlDatas, page);
-        
+       // mergeCrawlDataToMongo(url, crawlDatas);
         return parse;
     }
     

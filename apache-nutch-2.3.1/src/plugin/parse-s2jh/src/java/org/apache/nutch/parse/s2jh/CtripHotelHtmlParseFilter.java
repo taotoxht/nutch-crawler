@@ -51,13 +51,7 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
         	}else{
         		crawlDatas.add(new CrawlData(url, "level","酒景评级").setTextValue("",page));
         	}
-        	/*String  levelStr = getXPathValue(doc, "//DIV[@class='grade']/SPAN/@*").substring(62);
-        	if(levelStr!= null){
-        		crawlDatas.add(new CrawlData(url, "level","酒景评级").setTextValue(levelStr,page));
-        	}else{
-        		crawlDatas.add(new CrawlData(url, "level","酒景评级").setTextValue("",page));
-        	}*/
-            
+        	
         	/*酒景地址 adress*/
         	String adressStr=getXPathValue(doc, "//DIV[@id='J_htl_info']/DIV[@class='adress']").replaceAll(" ", "");
         	if(adressStr!=null){
@@ -70,12 +64,12 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
         	
         	
         /*酒景基本信息*/
-    	String  basicInfoStr = getXPathValue(doc, "//DIV[@id='htlDes']/P").substring(0,12);
-    	if(basicInfoStr != null){
+    	
+    	/*if(basicInfoStr != null){
     		crawlDatas.add(new CrawlData(url, "basicInfo","酒景基本信息").setTextValue(basicInfoStr,page));
     	}else{
     		crawlDatas.add(new CrawlData(url, "basicInfo","酒景基本信息").setTextValue("",page));
-    	}  
+    	} */ 
     	
     	/*酒景主题标签*/
     	String  hashtagStr = getXPathValue(doc, "//DIV[@id='htltags']/*");
@@ -94,11 +88,11 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
     	}  
     	
     	/*酒景简介*/
-    	String  descriptionStr = getXPathValue(doc, "//SPAN[@itemprop='description']").replaceAll(" ", "");
-    	if(descriptionStr != null){
-    		crawlDatas.add(new CrawlData(url, "description","酒景简介").setTextValue(descriptionStr,page));
+    	String  introductionStr = getXPathValue(doc, "//SPAN[@itemprop='description']").replaceAll(" ", "");
+    	if(introductionStr != null){
+    		crawlDatas.add(new CrawlData(url, "introduction","酒景简介").setTextValue(introductionStr,page));
     	}else{
-    		crawlDatas.add(new CrawlData(url, "description","酒景简介").setTextValue("",page));
+    		crawlDatas.add(new CrawlData(url, "introduction","酒景简介").setTextValue("",page));
     	}  
     	
     	/*配套设施*/
@@ -111,9 +105,9 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
  	    }
  	    String supportingFacilityStr=supportingFacilitTmp.substring(0,supportingFacilitTmp.length()-2).replaceAll("\n", "").replaceAll(" ", "");
     	if(supportingFacilityStr != null){
-    		crawlDatas.add(new CrawlData(url, "supportingFacility","配套设施").setTextValue(supportingFacilityStr,page));
+    		crawlDatas.add(new CrawlData(url, "supFac","配套设施").setTextValue(supportingFacilityStr,page));
     	}else{
-    		crawlDatas.add(new CrawlData(url, "supportingFacility","配套设施").setTextValue("",page));
+    		crawlDatas.add(new CrawlData(url, "supFac","配套设施").setTextValue("",page));
     	}  
     	
     	/*活动设施*/
@@ -126,9 +120,9 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
   	    }
   	    String activityFacilityStr=activityFacilityTmp.substring(0,activityFacilityTmp.length()-2).replaceAll("\n", "").replaceAll(" ", "");
     	if(activityFacilityStr != null){
-    		crawlDatas.add(new CrawlData(url, "activityFacility","活动设施").setTextValue(activityFacilityStr,page));
+    		crawlDatas.add(new CrawlData(url, "actFac","活动设施").setTextValue(activityFacilityStr,page));
     	}else{
-    		crawlDatas.add(new CrawlData(url, "activityFacility","活动设施").setTextValue("",page));
+    		crawlDatas.add(new CrawlData(url, "actFac","活动设施").setTextValue("",page));
     	}  
     	
     	/*酒店服务*/
@@ -141,9 +135,9 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
   	    }
   	    String hotelServiceStr=hotelServiceTmp.substring(0,hotelServiceTmp.length()-2).replaceAll("\n", "").replaceAll(" ", "");
     	if(hotelServiceStr != null){
-    		crawlDatas.add(new CrawlData(url, "hotelService","酒店服务").setTextValue(hotelServiceStr,page));
+    		crawlDatas.add(new CrawlData(url, "hotelSer","酒店服务").setTextValue(hotelServiceStr,page));
     	}else{
-    		crawlDatas.add(new CrawlData(url, "hotelService","酒店服务").setTextValue("",page));
+    		crawlDatas.add(new CrawlData(url, "hotelSer","酒店服务").setTextValue("",page));
     	}  
     	
     	/*客房设施*/
@@ -156,13 +150,15 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
   	    }
   	    String roomFacilityStr=roomFacilityTmp.substring(0,roomFacilityTmp.length()-2).replaceAll("\n", "").replaceAll(" ", "");
     	if(roomFacilityStr != null){
-    		crawlDatas.add(new CrawlData(url, "roomFacility","客房设施").setTextValue(roomFacilityStr,page));
+    		crawlDatas.add(new CrawlData(url, "roomFac","客房设施").setTextValue(roomFacilityStr,page));
     	}else{
-    		crawlDatas.add(new CrawlData(url, "roomFacility","客房设施").setTextValue("",page));
+    		crawlDatas.add(new CrawlData(url, "roomFac","客房设施").setTextValue("",page));
     	}  
     	
     	/*酒景基本信息*/
+    	String  basicInfoStr = getXPathValue(doc, "//DIV[@id='htlDes']/P").substring(0,12);//酒景基本信息1
     	StringBuffer informationsb = new StringBuffer();
+    	informationsb.append(basicInfoStr).append("&&");
   	    String informationStr=null;
   	    NodeList  informationpos_nodes = selectNodeList(doc,  "//DIV[@class='htl_info_table']/TABLE[@class='detail_extracontent']/TBODY/TR/TH");
   	    NodeList  informationdis_nodes = selectNodeList(doc, "//DIV[@class='htl_info_table']/TABLE[@class='detail_extracontent']/TBODY/TR/TD");
@@ -180,53 +176,52 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
   	    } 
   	    
   	    if(informationsb.length()>=2){
-  	    	informationStr=informationsb.substring(0,informationsb.length()-2).replaceAll("\n", "").replaceAll(" ", "");
+  	    	informationStr=informationsb.substring(0,informationsb.length()-2).replaceAll("\n", "").replaceAll(" ", "");//酒景基本信息2
   	    }
     	//String  informationStr = getXPathValue(doc, "//DIV[@class='htl_info_table']/TABLE[@class='detail_extracontent']/TBODY").replaceAll("\n", "").replaceAll(" ", "");
     	if(informationStr != null){
-    		crawlDatas.add(new CrawlData(url, "information","酒景基本信息").setTextValue(informationStr,page));
+    		crawlDatas.add(new CrawlData(url, "basicInfo","酒景基本信息").setTextValue(informationStr,page));
     	}else{
-    		crawlDatas.add(new CrawlData(url, "information","酒景基本信息").setTextValue("",page));
+    		crawlDatas.add(new CrawlData(url, "basicInfo","酒景基本信息").setTextValue("",page));
     	}  
     	
     	
         /*周边交通 */ 	
  	    StringBuffer trafficsb = new StringBuffer();
  	    String trafficStr=null;
- 	    NodeList  trafficpos_nodes = selectNodeList(doc, "//DIV[@class='traffic_box']/DIV[position()<11/P/A]");
- 	    NodeList  trafficdis_nodes = selectNodeList(doc, "//DIV[@class='traffic_box']/DIV[position()<11/P[@class='distance']");
+ 	    NodeList  trafficpos_nodes = selectNodeList(doc, "//DIV[@class='traffic_box']/DIV[position()<11]/P[@class='name']");
+ 	    NodeList  trafficdis_nodes = selectNodeList(doc, "//DIV[@class='traffic_box']/DIV[position()<11]/P[@class='distance']");
  	    if(trafficpos_nodes!=null&&trafficdis_nodes!=null)
  	    {
  	       if(trafficpos_nodes.getLength()==trafficdis_nodes.getLength())
  	       {
+ 	    	   int j=1;
  	    	   for(int i=0; i<trafficpos_nodes.getLength(); i++){
  	 	            if(((Element)trafficpos_nodes.item(i) != null)&&((Element)trafficdis_nodes.item(i) != null)){
- 	 	    	        trafficsb.append(((Element)trafficpos_nodes.item(i)).getTextContent()).append("##");
+ 	 	            	trafficsb.append(j); 	 	    	      
+ 	 	            	trafficsb.append(((Element)trafficpos_nodes.item(i)).getTextContent()).append("##");
  	 	    	        trafficsb.append(((Element)trafficdis_nodes.item(i)).getTextContent()).append("$;");
+ 	 	    	        j++;
  	 	            }	    	  
  	 	        }
  	       }
  	    } 
  	    
  	    if(trafficsb.length()>=2){
- 	         trafficStr=trafficsb.substring(0,trafficsb.length()-2);
+ 	         trafficStr=trafficsb.substring(0,trafficsb.length()-2).replaceAll("\n", "").replaceAll(" ", "");
  	    }
  	    if(trafficStr != null){
- 	       crawlDatas.add(new CrawlData(url, "traffic","周边交通").setTextValue(trafficStr,page));
+ 	       crawlDatas.add(new CrawlData(url, "surTra","周边交通").setTextValue(trafficStr,page));
  	    }else{
- 	    	crawlDatas.add(new CrawlData(url, "traffic","周边交通").setTextValue("",page));
+ 	    	crawlDatas.add(new CrawlData(url, "surTra","周边交通").setTextValue("",page));
  	    }  
-        
- 	   getXPathValue(doc, "//DIV[@id='J_htl_info']/DIV[@class='adress']");
- 	   getXPathValue(doc, "//DIV[@id='J_aroundListBox']");
-        	
-        	
+           	
 	}
         
        saveCrawlData(url, crawlDatas, page);
        
      //添加数据 到 汇总表
-      mergeCrawlDataToMongo(url, crawlDatas);
+     //mergeCrawlDataToMongo(url, crawlDatas);
         
 	   return parse;
 		
@@ -237,7 +232,7 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
 	
 	@Override
     public String getUrlFilterRegex() {
-    	return "^http://hotels.ctrip.com/.+/\\d+/?.*$";
+		return "^http://hotels.ctrip.com/.+/\\d+/?.*$";
     }
 
     @Override
