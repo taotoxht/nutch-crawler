@@ -67,13 +67,13 @@
 #城市列表页
 #demo http://hotel.elong.com/beijing/
 #+^http://hotel.elong.com/.*/?$
-+^http://hotel.elong.com/.+/?$
++^http://hotel\.elong.com/.+/?$
 
 #详情页:
 # http://hotel.elong.com/beijing/40101022/
 #+^http://hotel.elong.com/.+/\d+/?.*$
 #-^http://hotel.elong.com/.*.html
-+^http://hotel.elong.com/.+/\d+/?$
++^http://hotel\.elong\.com/.+/\d+/?$
+-http://hotel\.elong\.com/publishcomment\?hotelId=\d+
+
 #+.*
-################ toutiao.com ######################
-+^http://toutiao.com/
