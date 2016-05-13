@@ -216,7 +216,7 @@
 	</property>
 	<property>
 		<name>mongodb.host</name>
-		<value>192.168.9.21</value>
+		<value>192.168.9.25</value>
 	</property>
 	<property>
 		<name>mongodb.port</name>
@@ -224,7 +224,7 @@
 	</property>
 	<property>
 		<name>mongodb.db</name>
-		<value>nutch_xuht</value>
+		<value>nutch_xiang</value>
 	</property>
 	
 </configuration>
