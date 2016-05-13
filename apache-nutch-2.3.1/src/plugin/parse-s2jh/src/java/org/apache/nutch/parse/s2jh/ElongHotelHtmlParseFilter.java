@@ -37,8 +37,15 @@ public class ElongHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter {
         	}else{
         		crawlDatas.add(new CrawlData(url, "name","酒景名称").setTextValue("",page));
         	}  
+        	//所属城市
         	
-        	   /*酒景评级 level*/	    
+        	String city = getXPathValue(doc, "//div[@class='link555 t12']/a[3]");
+        	if(!StringUtils.isEmpty(city)){
+        		city = city.substring(0, city.length()-2);
+        	}
+        	crawlDatas.add(new CrawlData(url, "city").setTextValue(city));
+        	
+        	/*酒景评级 level*/	    
 		    NodeList level_nodes_node = null;
 		    Element e = null;
     		NodeList level_nodes = selectNodeList(doc, "//DIV[@class='hdetail_rela_wrap']/DIV[1]/DIV[1]/DIV[1]/DIV/");
