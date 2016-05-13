@@ -1,3 +1,5 @@
-http://hotel.elong.com/shangqiu/90210667/
-http://hotel.elong.com/beijing/00101120/
-http://hotel.elong.com/baoding/50512001/
+#http://hotel.elong.com/shangqiu/90210667/
+#http://hotel.elong.com/beijing/00101120/
+http://hotels.ctrip.com/hotel/419302.html#ctm_ref=hod_hp_hv_def_n_1
+http://piao.ctrip.com/dest/t50102.html
+

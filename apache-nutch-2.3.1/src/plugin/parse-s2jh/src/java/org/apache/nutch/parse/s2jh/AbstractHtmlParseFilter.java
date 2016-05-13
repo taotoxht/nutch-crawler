@@ -260,6 +260,22 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 
 	}
 
+	/*基于xpath定位的节点返回该节点的某个属性值内容*/
+	protected String getXPathAttribute(Node contextNode, String xpath, String attribute)
+	{
+		Element e=null;
+		Node node=null;
+		node=selectSingleNode(contextNode,xpath);
+		if(node!=null)
+		{
+			e=(Element)node;
+			if(e!=null)
+				return e.getAttribute(attribute);
+			else return null;
+		}
+		return null;
+	}
+	
 	/**
 	 * 基于xpath返回对应的html格式内容
 	 * 
@@ -839,4 +855,6 @@ public abstract class AbstractHtmlParseFilter implements ParseFilter {
 	 */
 	public abstract Parse filterInternal(String url, WebPage page, Parse parse, HTMLMetaTags metaTags,
 			DocumentFragment doc) throws Exception;
+	
+	
 }
