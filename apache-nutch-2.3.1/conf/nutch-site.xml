@@ -157,7 +157,7 @@
     <!-- 代理配置 -->
 	<property>
 	  <name>http.useProxyPool</name>
-	  <value>true</value>
+	  <value>false</value>
 	  <description>自定义属性 是否使用代理池 默认 false</description>
 	</property>
 	
@@ -216,7 +216,7 @@
 	</property>
 	<property>
 		<name>mongodb.host</name>
-		<value>192.168.9.25</value>
+		<value>192.168.9.21</value>
 	</property>
 	<property>
 		<name>mongodb.port</name>
@@ -224,7 +224,7 @@
 	</property>
 	<property>
 		<name>mongodb.db</name>
-		<value>nutch_xiang</value>
+		<value>nutch_xuht</value>
 	</property>
 	
 </configuration>
