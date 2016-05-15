@@ -27,7 +27,7 @@
 
 # skip image and other suffixes we can't yet parse
 # for a more extensive coverage use the urlfilter-suffix plugin
--\.(ico|ICO|sit|SIT|eps|EPS|wmf|WMF|zip|ZIP|ppt|PPT|mpg|MPG|xls|XLS|gz|GZ|rpm|RPM|tgz|TGZ|mov|MOV|exe|EXE)$
+-\.(ico|ICO|sit|SIT|eps|EPS|wmf|WMF|zip|ZIP|ppt|PPT|mpg|MPG|xls|XLS|gz|GZ|rpm|RPM|tgz|TGZ|mov|MOV|exe|EXE|gif|GIF)$
 
 # other excluding rules
 ################ vip.com ######################
@@ -65,6 +65,10 @@
 -^http://comment.cpd.com.cn
 -^http://www.cpd.com.cn
 -^http://home.cpd.com.cn
+
+################## ctrip htmlunit 排除 ###################
+#-^https://pages.c-ctrip.com/Cdid/deviceid.js
+#-^http://webresource.c-ctrip.com/ResCRMOnline/R1/pageheader/js/PageHeadController.js?temp=20160510
 
 # accept anything else
 +.*

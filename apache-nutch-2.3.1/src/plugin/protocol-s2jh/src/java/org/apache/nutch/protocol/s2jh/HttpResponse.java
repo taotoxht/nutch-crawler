@@ -21,6 +21,7 @@ package org.apache.nutch.protocol.s2jh;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,17 +40,14 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.avro.util.Utf8;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.nutch.metadata.Metadata;
 import org.apache.nutch.metadata.SpellCheckedMetadata;
 import org.apache.nutch.net.protocols.HttpDateFormat;
 import org.apache.nutch.net.protocols.Response;
-import org.apache.nutch.parse.ParseFilter;
 import org.apache.nutch.parse.s2jh.AbstractHtmlParseFilter;
-import org.apache.nutch.parse.s2jh.HtmlParseFilterHelper;
-import org.apache.nutch.plugin.Extension;
-import org.apache.nutch.plugin.ExtensionPoint;
 import org.apache.nutch.plugin.PluginDescriptor;
 import org.apache.nutch.plugin.PluginRepository;
 import org.apache.nutch.protocol.ProtocolException;
@@ -381,6 +379,8 @@ public class HttpResponse implements Response {
         int i = 0;
         while (i++ < MAX_AJAX_WAIT_SECONDS) {
             html = page.asXml();
+                //taotoxht st
+//            FileUtils.writeStringToFile(new File("/home/tao/data/tmp/html.txt"), html);
             ok = isParseDataFetchLoaded(urlStr, html);
             if (ok) {
                 break;
@@ -564,7 +564,6 @@ public class HttpResponse implements Response {
 	    if (parseFilters != null) {
 	        for (AbstractHtmlParseFilter htmlParseFilter : parseFilters) {
 	            Boolean ret = htmlParseFilter.isParseDataFetchLoaded(url, html);
-	            System.out.println(html);
 	            Http.LOG.debug("Invoke isParseDataFetchLoaded of {} , return : {}", htmlParseFilter.getClass(), ret);
 	            //Any one return NOT loaded, break and return flase
 	            if (ret == false) {

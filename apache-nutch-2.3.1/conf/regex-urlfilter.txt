@@ -66,27 +66,39 @@
 ################ elong.com ######################
 #城市列表页
 #demo http://hotel.elong.com/beijing/
-#+^http://hotel.elong.com/.*/?$
-+^http://hotel\.elong.com/.+/?$
+#+^http://hotel\.elong\.com/\w+/?$
++^http://hotel\.elong\.com/beijing/?$
 
 #详情页:
 # http://hotel.elong.com/beijing/40101022/
-#+^http://hotel.elong.com/.+/\d+/?.*$
-#-^http://hotel.elong.com/.*.html
-+^http://hotel\.elong\.com/.+/\d+/?$
++^http://hotel\.elong\.com/\w+/\d+/?$
+
 -http://hotel\.elong\.com/publishcomment\?hotelId=\d+
 
 
-################ ctrip.com ######################
+################ ctrip.com  hotel######################
 #城市列表页
 #demo http://hotels.ctrip.com/hotel/Wuhan477
-+^http://hotels.ctrip.com/hotel/.+\d+/?$
--^http://hotels.ctrip.com/hotel/.+\d+/feature.*$
-#详情页:
-# http://hotel.qunar.com/city/guangzhou/dt-1992/?tag=guangzhou#fromDate=2016-04-23&toDate=2016-04-24&q=&from=list_page&fromFocusList=0&filterid=c7a57717-3e03-41dc-8656-9e71a715474f_A&showMap=0&qptype=&QHFP=ZSS_A1A0EC92 
-+^http://hotel.qunar.com/city/.*/.*$
++^http://hotels\.ctrip\.com/hotel/\w+\d+/?$
+##下一页 http://hotels.ctrip.com/hotel/wuhan477/p2
++^http://hotels\.ctrip\.com/hotel/\w+\d+/p\d$
+#过滤
+-^http://hotels\.ctrip\.com/hotel/\w+\d+/feature.*$
 
-#各分类列表页面“上一页”，“下一页”链接：
-+http://te.hotel.qunar.com/render/renderAPIList.jsp.*
-+.*
+#详情页:
+# http://hotels.ctrip.com/hotel/396401.html
++^http://hotels\.ctrip\.com/hotel/\d+\.html$
+
+################ ctrip.com  scenic######################
+# 城市 列表页 http://piao.ctrip.com/dest/dc-guangzhou-32/s-tickets/#ctm_ref=vat_hp_sb_lst
+# http://piao.ctrip.com/dest/dc-Fuxin-254/s-tickets/#ctm_ref=vat_hp_sb_lst
+#http://piao.ctrip.com/dest/dc-guangzhou-32/s-tickets/#ctm_ref=vat_hp_sb_lst
++^http://piao\.ctrip\.com/dest/dc-\w+-\d+/s-tickets/?$
+#下一页 http://piao.ctrip.com/dest/dc-guangzhou-32/s-tickets/P3/
+#+^http://piao\.ctrip\.com/dest/dc-guangzhou-32/s-tickets/P\d/?$
+
+# 详情页 http://piao.ctrip.com/dest/t65581.html
+#+^http://piao\.ctrip\.com/dest/\w\d+\.html$
+
+#+.*
 
