@@ -3,7 +3,6 @@ package org.apache.nutch.parse.s2jh;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,6 +13,8 @@ import org.apache.nutch.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
+
+import com.alibaba.fastjson.JSON;
 
 /**
  * 
@@ -41,9 +42,10 @@ public class CrawlData implements Serializable {
     private String htmlValue;
     private BigDecimal numValue;
     private Date dateValue;
-
+    private JSON  jsonValue;  	
+    
     public static enum ValueType {
-        text, html, num, date, img
+        text, html, num, date, img,json
     }
 
     public CrawlData(String url, String code) {
@@ -148,6 +150,14 @@ public class CrawlData implements Serializable {
         injectDataToPageMetadata(code, htmlValue == null ? null : htmlValue.toString(), page);
         return this;
     }
+    
+    public CrawlData setJsonValue(JSON jsonValue, WebPage page) {
+        Assert.isNull(type, "一条记录只能存放一种类型数据：type=" + type);
+        this.type = ValueType.json;
+        this.jsonValue = jsonValue;
+        injectDataToPageMetadata(code, jsonValue == null ? null : jsonValue.toString(), page);
+        return this;
+    }
 
     public BigDecimal getNumValue() {
         return numValue;
@@ -224,6 +234,8 @@ public class CrawlData implements Serializable {
             return numValue;
         } else if (ValueType.date.equals(type)) {
             return dateValue;
+        }else if(ValueType.json.equals(type)){
+        	 return jsonValue;
         }
         return "Undefined";
     }

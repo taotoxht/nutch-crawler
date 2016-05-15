@@ -165,9 +165,6 @@
 
         <dependency org="com.belerweb" name="pinyin4j" rev="2.5.0" conf="*->default"/>
         <dependency org="org.apache.solr" name="solr-dataimporthandler" rev="4.6.0" conf="*->default" />
-        
-         <dependency org="com.alibaba" name="fastjson" rev="1.2.11" conf="*->default"/>
-        
         <!--global exclusion -->
         <exclude module="ant" />
         <exclude module="slf4j-jdk14" />
@@ -182,5 +179,5 @@
         <exclude module="solr-core" />
     </dependencies>
    
-   
+    <dependency org="com.alibaba" name="fastjson" rev="1.2.11" conf="*->default"/>
 </ivy-module>

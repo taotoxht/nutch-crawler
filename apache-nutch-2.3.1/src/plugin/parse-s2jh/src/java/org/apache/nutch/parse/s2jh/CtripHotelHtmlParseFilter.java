@@ -1,5 +1,6 @@
 package org.apache.nutch.parse.s2jh;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.nutch.parse.HTMLMetaTags;
@@ -9,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
 
 public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
@@ -187,34 +190,45 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
 	
 	
     /*周边交通 */ 	
-	    StringBuffer trafficsb = new StringBuffer();
-	    String trafficStr=null;
-	    NodeList  trafficpos_nodes = selectNodeList(doc, "//DIV[@class='traffic_box']/DIV[position()<11]/P[@class='name']");
-	    NodeList  trafficdis_nodes = selectNodeList(doc, "//DIV[@class='traffic_box']/DIV[position()<11]/P[@class='distance']");
-	    if(trafficpos_nodes!=null&&trafficdis_nodes!=null)
-	    {
-	       if(trafficpos_nodes.getLength()==trafficdis_nodes.getLength())
-	       {
-	    	   int j=1;
-	    	   for(int i=0; i<trafficpos_nodes.getLength(); i++){
-	 	            if(((Element)trafficpos_nodes.item(i) != null)&&((Element)trafficdis_nodes.item(i) != null)){
-	 	            	trafficsb.append(j); 	 	    	      
-	 	            	trafficsb.append(((Element)trafficpos_nodes.item(i)).getTextContent()).append("##");
-	 	    	        trafficsb.append(((Element)trafficdis_nodes.item(i)).getTextContent()).append("$;");
-	 	    	        j++;
-	 	            }	    	  
-	 	        }
-	       }
-	    } 
-	    
-	    if(trafficsb.length()>=2){
-	         trafficStr=trafficsb.substring(0,trafficsb.length()-2).replaceAll("\n", "").replaceAll(" ", "");
+//	    NodeList  trafficpos_nodes = selectNodeList(doc, "//DIV[@class='traffic_box']/DIV[position()<11]/P[@class='name']");
+//	    NodeList  trafficdis_nodes = selectNodeList(doc, "//DIV[@class='traffic_box']/DIV[position()<11]/P[@class='distance']");
+	    NodeList  trafficItems = selectNodeList(doc, "//DIV[@class='traffic_box']/DIV[@class='traffic_item']");
+	   
+	    if(trafficItems != null){
+	    	  JSONArray trs = new JSONArray();
+	    	for(int i=0; i<trafficItems.getLength(); i++){
+	    		Node trafficItem = trafficItems.item(i);
+	    		List<String> tr = new ArrayList<String>(2);
+	    		tr.add(getXPathAttribute(trafficItems.item(i), "span", "class"));
+	    		String trafficStr=null;
+	    		StringBuffer trafficsb = new StringBuffer();
+	    		NodeList  trafficpos_nodes = selectNodeList(trafficItem, "P[@class='name']");
+	    	   NodeList  trafficdis_nodes = selectNodeList(trafficItem, "P[@class='distance']");
+	    	   if(trafficpos_nodes.getLength()==trafficdis_nodes.getLength())
+		       {
+		    	   int j=1;
+		    	   for(int k=0; k<trafficpos_nodes.getLength(); k++){
+		 	            if(((Element)trafficpos_nodes.item(k) != null)&&((Element)trafficdis_nodes.item(k) != null)){
+		 	            	trafficsb.append(j).append("##"); 	 	    	      
+		 	            	trafficsb.append(((Element)trafficpos_nodes.item(k)).getTextContent()).append("##");
+		 	    	        trafficsb.append(((Element)trafficdis_nodes.item(k)).getTextContent()).append("$;");
+		 	    	        j++;
+		 	            }	    	  
+		 	        }
+		    	   if(trafficsb.length()>=2){
+		  	         trafficStr=trafficsb.substring(0,trafficsb.length()-2).replaceAll("\n", "").replaceAll(" ", "");
+		    	   }
+		    	   tr.add(trafficStr);
+		    	   trs.add(tr);
+		       }
+	    	   
+	    	}
+	    	 crawlDatas.add(new CrawlData(url, "surTra","周边交通").setJsonValue(trs,page));
+	    	 
 	    }
-	    if(trafficStr != null){
-	       crawlDatas.add(new CrawlData(url, "surTra","周边交通").setTextValue(trafficStr,page));
-	    }else{
-	    	crawlDatas.add(new CrawlData(url, "surTra","周边交通").setTextValue("",page));
-	    }  
+	   
+	    
+//	    String trafficStr="";
        	
 
         

@@ -157,7 +157,7 @@
     <!-- 代理配置 -->
 	<property>
 	  <name>http.useProxyPool</name>
-	  <value>true</value>
+	  <value>false</value>
 	  <description>自定义属性 是否使用代理池 默认 false</description>
 	</property>
 	
