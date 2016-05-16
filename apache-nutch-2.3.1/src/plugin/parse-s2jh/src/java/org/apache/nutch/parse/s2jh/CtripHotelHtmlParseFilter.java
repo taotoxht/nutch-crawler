@@ -38,7 +38,7 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
     		crawlDatas.add(new CrawlData(url, "name","酒景名称").setTextValue("",page));
     	}  
     	
-    	/*所在城市*/
+    	/*所属城市*/
     	String  cityStr = getXPathAttribute(doc, "//DIV[@id='searchForm']/INPUT[1]","value");
     	if(cityStr != null){
     		crawlDatas.add(new CrawlData(url, "city","所在城市").setTextValue(cityStr,page));
@@ -74,7 +74,14 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
 	} */ 
 	
 	/*酒景主题标签*/
-	String  hashtagStr = getXPathValue(doc, "//DIV[@id='htltags']/*");
+    StringBuffer hashtagTmp = new StringBuffer();
+    NodeList  hashtag_nodes = selectNodeList(doc,"//DIV[@id='htltags']/SPAN");
+    for(int i=0; i<hashtag_nodes.getLength(); i++){
+    	if(((Element)hashtag_nodes.item(i)) != null){
+    	    hashtagTmp.append(((Element)hashtag_nodes.item(i)).getTextContent()).append("##");
+    	}	    	  
+    }
+	String  hashtagStr = hashtagTmp.substring(0,hashtagTmp.length()-2).replaceAll("\n", "").replaceAll(" ", "");
 	if(hashtagStr != null){
 		crawlDatas.add(new CrawlData(url, "hashtag","酒景主题标签").setTextValue(hashtagStr,page));
 	}else{
@@ -82,7 +89,7 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
 	}  
 	
 	/*总机电话*/
-	String  telephoneStr = getXPathValue(doc, "//DIV[@id='htlDes']/P/SPAN/@*").substring(0,14);
+	String  telephoneStr = getXPathValue(doc, "//DIV[@id='htlDes']/P/SPAN/@*").substring(2,14);
 	if(telephoneStr != null){
 		crawlDatas.add(new CrawlData(url, "telephone","总机电话").setTextValue(telephoneStr,page));
 	}else{
@@ -98,14 +105,14 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
 	}  
 	
 	/*配套设施*/
-	    StringBuffer supportingFacilitTmp = new StringBuffer();
-	    NodeList  supporting_nodes = selectNodeList(doc, "//DIV[@id='J_htl_facilities']/TABLE/TBODY/TR[1]/TD/UL/LI");
-	    for(int i=0; i<supporting_nodes.getLength(); i++){
-	       if(((Element)supporting_nodes.item(i)) != null){
-	    	  supportingFacilitTmp.append(((Element)supporting_nodes.item(i)).getTextContent()).append("##");
-	        }	    	  
-	    }
-	    String supportingFacilityStr=supportingFacilitTmp.substring(0,supportingFacilitTmp.length()-2).replaceAll("\n", "").replaceAll(" ", "");
+     StringBuffer supportingFacilitTmp = new StringBuffer();
+	 NodeList  supporting_nodes = selectNodeList(doc, "//DIV[@id='J_htl_facilities']/TABLE/TBODY/TR[1]/TD/UL/LI");
+	 for(int i=0; i<supporting_nodes.getLength(); i++){
+	     if(((Element)supporting_nodes.item(i)) != null){
+	    	 supportingFacilitTmp.append(((Element)supporting_nodes.item(i)).getTextContent()).append("##");
+	     }	    	  
+	 }
+	String supportingFacilityStr=supportingFacilitTmp.substring(0,supportingFacilitTmp.length()-2).replaceAll("\n", "").replaceAll(" ", "");
 	if(supportingFacilityStr != null){
 		crawlDatas.add(new CrawlData(url, "supFac","配套设施").setTextValue(supportingFacilityStr,page));
 	}else{
@@ -160,7 +167,7 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
 	/*酒景基本信息*/
 	String  basicInfoStr = getXPathValue(doc, "//DIV[@id='htlDes']/P").substring(0,12);//酒景基本信息1
 	StringBuffer informationsb = new StringBuffer();
-	informationsb.append(basicInfoStr).append("&&");
+	informationsb.append(basicInfoStr);
 	    String informationStr=null;
 	    NodeList  informationpos_nodes = selectNodeList(doc,  "//DIV[@class='htl_info_table']/TABLE[@class='detail_extracontent']/TBODY/TR/TH");
 	    NodeList  informationdis_nodes = selectNodeList(doc, "//DIV[@class='htl_info_table']/TABLE[@class='detail_extracontent']/TBODY/TR/TD");
@@ -170,8 +177,8 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
 	       {
 	    	   for(int i=0; i<informationpos_nodes.getLength(); i++){
 	 	            if(((Element)informationpos_nodes.item(i) != null)&&((Element)informationdis_nodes.item(i) != null)){
-	 	            	informationsb.append(((Element)informationpos_nodes.item(i)).getTextContent()).append("##");
-	 	            	informationsb.append(((Element)informationdis_nodes.item(i)).getTextContent()).append("$;");
+	 	            	informationsb.append(((Element)informationpos_nodes.item(i)).getTextContent());
+	 	            	informationsb.append(((Element)informationdis_nodes.item(i)).getTextContent());
 	 	            }	    	  
 	 	        }
 	       }

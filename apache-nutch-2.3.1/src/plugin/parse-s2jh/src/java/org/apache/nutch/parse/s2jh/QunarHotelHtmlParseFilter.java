@@ -16,6 +16,7 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import com.google.common.collect.Lists;
 /**
  * 
@@ -35,147 +36,134 @@ public class QunarHotelHtmlParseFilter extends AbstractHtmlParseFilter {
 
         if (url.startsWith("http://hotel.qunar.com/")) {
         	
-        	try {
-        		crawlDatas.add(new CrawlData(url, "name","酒店名称").setTextValue(getXPathValue(doc, "//DIV[@class='b_wrap']/DIV[@class='b-crumbs']/DIV/SPAN[2]/SPAN"),page));
-            	System.out.println("name:" + getXPathValue(doc, "//DIV[@class='b_wrap']/DIV[@class='b-crumbs']/DIV/SPAN[2]/SPAN"));
-			} catch (Exception e) {
-				// TODO: handle exception
-				crawlDatas.add(new CrawlData(url, "name","酒店名称").setTextValue("",page));
-			}
         	
-        	try {
-        		crawlDatas.add(new CrawlData(url, "style","酒景类型").setTextValue(getXPathValue(doc, "//DIV[@class='b_wrap']/DIV[@class='b-crumbs']/DIV/SPAN[2]/A[2]").substring(2, 4),page));
-            	System.out.println("style:" + getXPathValue(doc, "//DIV[@class='b_wrap']/DIV[@class='b-crumbs']/DIV/SPAN[2]/A[2]").substring(2, 4));
-			} catch (Exception e) {
-				// TODO: handle exception
-				crawlDatas.add(new CrawlData(url, "style","酒景类型").setTextValue("",page));
-			}
+        	/*酒景名称*/
+        	String  nameStr = getXPathValue(doc, "//DIV[@id='detail_pageHeader']/H2/SPAN");
+        	if(nameStr != null){
+        		crawlDatas.add(new CrawlData(url, "name","酒景名称").setTextValue(nameStr,page));
+        	}else{
+        		crawlDatas.add(new CrawlData(url, "name","酒景名称").setTextValue("",page));
+        	}  
         	
-        	try {
-        		crawlDatas.add(new CrawlData(url, "address","酒店地址").setTextValue(getXPathValue(doc, 
-            			"//DIV[@id='detail_pageHeader']/P[@class='adress']/SPAN").replaceAll(" ", ""),page));
-            	System.out.println("address:" + getXPathValue(doc, 
-            			"//DIV[@id='detail_pageHeader']/P[@class='adress']/SPAN").replaceAll(" ", ""));
-				
-			} catch (Exception e) {
-				// TODO: handle exception
-				crawlDatas.add(new CrawlData(url, "address","酒店地址").setTextValue("",page));
-			}
-        
-        	try {
-        		crawlDatas.add(new CrawlData(url, "level","酒店级别").setTextValue(getXPathValue(doc, "//DIV[@id='detail_pageHeader']/H2/EM"),page));
-            	System.out.println("level:" + getXPathValue(doc, "//DIV[@id='detail_pageHeader']/H2/EM"));
-			} catch (Exception e) {
-				// TODO: handle exception
-				crawlDatas.add(new CrawlData(url, "level","酒店级别").setTextValue("",page));
-			}
+        	/*所属城市*/
+        	String  cityStr = getXPathAttribute(doc, "//SCRIPT[@type='text/javascript']","var cityName");
+        	if(cityStr != null){
+        		crawlDatas.add(new CrawlData(url, "city","所在城市").setTextValue(cityStr,page));
+        	}else{
+        		crawlDatas.add(new CrawlData(url, "city","所在城市").setTextValue("",page));
+        	}  
         	
-        	/*设施概况(1)*/
-        	String[] hotelContent = new String[]{"联系方式","基本信息","酒店简介","网络设施","停车场","房间设施","酒店服务","酒店设施"};
-        	NodeList nodelist1 = selectNodeList(doc, "//DIV[@id='descContent']/DIV[1]/DL");
-        	for(int i=0; i<nodelist1.getLength(); i++){
-        		try {
-					NodeList no1 = ((Element)nodelist1.item(i)).getElementsByTagName("DT");
-					NodeList no2 = ((Element)nodelist1.item(i)).getElementsByTagName("DD");
-					try {
-						String strKey = no1.item(0).getTextContent().replaceAll(" +", "").replaceAll("\n", "").replaceAll("	+", "");
-						String strValue = no2.item(0).getTextContent().replaceAll(" +", "").replaceAll("\n", "").replaceAll("	+", "");
-						if(strKey.equals(hotelContent[0])){
-							if(strValue.length() > 24){
-								crawlDatas.add(new CrawlData(url, "telephone","酒店电话").setTextValue(strValue.substring(2, 14),page));														
-								crawlDatas.add(new CrawlData(url, "fax","酒店传真").setTextValue(strValue.substring(strValue.length()-12,strValue.length()),page));
-							}else if(strValue.length()<24 && strValue.length() > 0){
-								crawlDatas.add(new CrawlData(url, "telephone","酒店电话").setTextValue(strValue.substring(2, 14),page));	
-							}							
-						}else if(strKey.equals(hotelContent[1])){
-								crawlDatas.add(new CrawlData(url, "baseInfo","基本信息").setTextValue(no2.item(0).getTextContent().replaceAll(" +", "")
-										.replaceAll("\n", "").replaceAll("	+", ""),page));
-						}else if(strKey.equals(hotelContent[2])){				
-								crawlDatas.add(new CrawlData(url, "information","酒店介绍").setTextValue(no2.item(0).getTextContent().replaceAll(" +", "")
-										.replaceAll("\n", "").replaceAll("	+", ""),page));
-						}
-					} catch (Exception e) {
-						// TODO: handle exception
-						continue;
-					}
-					
-				} catch (Exception e) {
-					// TODO: handle exception
-					continue;
-				}
+        	/*酒景评级 level*/	
+        	String  levelStr = getXPathValue(doc, "//DIV[@id='detail_pageHeader']/H2/EM");
+        	if(levelStr!= null){
+        		crawlDatas.add(new CrawlData(url, "level","酒景评级").setTextValue(levelStr,page));
+        	}else{
+        		crawlDatas.add(new CrawlData(url, "level","酒景评级").setTextValue("",page));
         	}
         	
-        	/*设施概况(2)*/
-        	 NodeList nodelist2 =  selectNodeList(doc, "//DIV[@id='descContent']/DL");
-        	 for(int i=0; i<nodelist2.getLength();i++){
-        		 try {
-        			NodeList no3 = ((Element)nodelist2.item(i)).getElementsByTagName("DT");
- 					NodeList no4 = ((Element)nodelist2.item(i)).getElementsByTagName("DD");
- 					try {
-						String strKey = no3.item(0).getTextContent().replaceAll(" +", "").replaceAll("\n", "").replaceAll("	+", "");
-						if(strKey.equals(hotelContent[3])){
-							crawlDatas.add(new CrawlData(url, "internetfac","网络设施").setTextValue(no4.item(0).getTextContent().replaceAll(" +", "")
-									.replaceAll("\n", "").replaceAll("	+", ""),page));
-	 					}else if(strKey.equals(hotelContent[4])){
-	 						crawlDatas.add(new CrawlData(url, "parking","停车场").setTextValue(no4.item(0).getTextContent().replaceAll(" +", "")
-									.replaceAll("\n", "").replaceAll("	+", ""),page));
-	 					}else if(strKey.equals(hotelContent[5])){
-	 						NodeList housefacList = ((Element)no4.item(0)).getElementsByTagName("SPAN");
-	 						  StringBuffer housefacsb = new StringBuffer();
-	 				           if(housefacList.getLength() != 0){
-	 				        	   for(int j=0; j<housefacList.getLength(); j++){
-	 				        		   String str = "";	 				            	  			            	  
-	 				            	   NodeList no = ((Element)housefacList.item(j)).getElementsByTagName("SPAN");
-	 				            	   if(no.getLength() != 0){
-	 				                  	str = no.item(0).getTextContent().replaceAll(" +", "").replace("\n", "") + ":" + ((Element)no.item(0)).getAttribute("title") + ";"; 	 				              
-	 				            	   }
-	 				            	   housefacsb.append(str);
-	 				               }  
-	 				           }
-	 				          crawlDatas.add(new CrawlData(url, "housefac","房间设施").
-	 				        		  setTextValue(housefacsb.toString().substring(0,housefacsb.toString().length()-1),page));
-	 					}else if(strKey.equals(hotelContent[6])){
-	 						 NodeList hSnodeList =  ((Element)no4.item(0)).getElementsByTagName("SPAN");	 						
-	 						 StringBuffer hotelServicesb = new StringBuffer();
-	 				           if(hSnodeList.getLength() != 0){
-	 				        	   for(int j=0; j<hSnodeList.getLength(); j++){
-	 				        		   String str = "";
-	 				            	   NodeList no = ((Element)hSnodeList.item(j)).getElementsByTagName("SPAN");
-	 				            	   if(no.getLength() != 0){
-	 				                  	str = no.item(0).getTextContent().replaceAll(" +", "").replace("\n", "") + ":" + ((Element)no.item(0)).getAttribute("title") + ";";  				                  	
-	 				            	   }
-	 				            	   hotelServicesb.append(str);
-	 				               }  
-	 				           }
-	 				     crawlDatas.add(new CrawlData(url, "hotelService","酒店服务").setTextValue(hotelServicesb.toString().substring(0,hotelServicesb.toString().length()-1),page));
-	 					}else if(strKey.equals(hotelContent[7])){
-	 					   NodeList hFnodeList =  ((Element)no4.item(0)).getElementsByTagName("SPAN");
-	 			           StringBuffer hotelfacsb = new StringBuffer();
-	 			           if(hFnodeList.getLength() != 0){
-	 			        	   for(int j=0; j<hFnodeList.getLength(); j++){
-	 			        		   String str = "";	            	  
-	 			            	   NodeList no = ((Element)hFnodeList.item(j)).getElementsByTagName("SPAN");
-	 			            	   if(no.getLength() != 0){
-	 			                  	str = no.item(0).getTextContent().replaceAll(" +", "").replace("\n", "") + ":" + ((Element)no.item(0)).getAttribute("title") + ";"; 
-	 			            	   }
-	 			            	   hotelfacsb.append(str);
-	 			               }  
-	 			           }
-	 			        crawlDatas.add(new CrawlData(url, "hotelfac","酒店设施").
-	 			        		setTextValue(hotelfacsb.toString().substring(0,hotelfacsb.toString().length()-1),page)); 
-	 					}
-					} catch (Exception e) {
-						// TODO: handle exception
-						continue;
-					} 					
-				} catch (Exception e) {
-					// TODO: handle exception
-					continue;
-				}
-        		 	
-        	 }
+        	/*酒景地址 adress*/
+        	String adressStr=getXPathValue(doc, "//DIV[@id='detail_pageHeader']/P[@class='adress']/SPAN").replaceAll(" ", "");
+        	if(adressStr!=null){	
+        			crawlDatas.add(new CrawlData(url, "address","酒景地址").setTextValue(adressStr,page)); 
+        		}
+            else{
+        		    crawlDatas.add(new CrawlData(url, "address","酒景地址").setTextValue("",page)); 
+        	}
+        	
+        	/*总机电话*/
+        	String  telephoneStr = getXPathValue(doc, "//DIV[@class='base-info bordertop clrfix']/DL[1]/DD/CITE[1]");
+        	if(telephoneStr != null){
+        		crawlDatas.add(new CrawlData(url, "telephone","总机电话").setTextValue(telephoneStr,page));
+        	}else{
+        		crawlDatas.add(new CrawlData(url, "telephone","总机电话").setTextValue("",page));
+        	}  
+        	
+        	/*传真号码*/
+        	String  faxStr = getXPathValue(doc, "//DIV[@class='base-info bordertop clrfix']/DL[1]/DD/CITE[2]");
+        	if(faxStr != null){
+        		crawlDatas.add(new CrawlData(url, "fax","传真号码").setTextValue(telephoneStr,page));
+        	}else{
+        		crawlDatas.add(new CrawlData(url, "fax","传真号码").setTextValue("",page));
+        	}  
+        	
+        	/*酒景基本信息*/
+        	String  basicInfoStr =null;
+        	StringBuffer informationsb = new StringBuffer();
+            NodeList  information_nodes = selectNodeList(doc,  "//DIV[@class='base-info bordertop clrfix']/DL[2]/DD");
+            for(int i=0; i<information_nodes.getLength(); i++){
+        	 	if((Element)information_nodes.item(i) != null){
+        	 	        informationsb.append(((Element)information_nodes.item(i)).getTextContent()).append("##");
+        	 	}	    	  
+        	}        
+            if(informationsb.length()>=2){
+        	    basicInfoStr=informationsb.substring(0,informationsb.length()-2).replaceAll("\n", "").replaceAll(" ", "");
+            }
+        	if(basicInfoStr != null){
+        		crawlDatas.add(new CrawlData(url, "basicInfo","酒景基本信息").setTextValue(basicInfoStr,page));
+        	}else{
+        		crawlDatas.add(new CrawlData(url, "basicInfo","酒景基本信息").setTextValue("",page));
+            }  
+        	
+        	/*酒景简介*/
+        	String  introductionStr = getXPathValue(doc, "//DL[@class='inform-list clrfix']/DD/DIV[@class='introduce']").replaceAll(" ", "");
+        	if(introductionStr != null){
+        		crawlDatas.add(new CrawlData(url, "introduction","酒景简介").setTextValue(introductionStr.trim(),page));
+        	}else{
+        		crawlDatas.add(new CrawlData(url, "introduction","酒景简介").setTextValue("",page));
+        	}  
+        	/*配套设施*/
+    	    StringBuffer supportingFacilitTmp = new StringBuffer();
+    	    supportingFacilitTmp.append(getXPathValue(doc,"//SPAN[@class='each-facility inter-width']")).append("&&");
+    	    supportingFacilitTmp.append(getXPathValue(doc,"//DIV[@class='hotel-introduce']/DL[2]/DD/SPAN")).append("&&");
+    	    NodeList  supporting_nodes = selectNodeList(doc, "//DIV[@class='hotel-introduce']/DL[5]/DD/SPAN");
+    	    for(int i=0; i<supporting_nodes.getLength(); i++){
+    	       if(((Element)supporting_nodes.item(i)) != null){
+    	    	  supportingFacilitTmp.append(((Element)supporting_nodes.item(i)).getTextContent()).append("##");
+    	        }	    	  
+    	    }
+    	    String supportingFacilityStr=supportingFacilitTmp.substring(0,supportingFacilitTmp.length()-2).replaceAll("\n", "").replaceAll(" ", "");
+    	    if(supportingFacilityStr != null){
+    		    crawlDatas.add(new CrawlData(url, "supFac","配套设施").setTextValue(supportingFacilityStr,page));
+    	    }else{
+    		    crawlDatas.add(new CrawlData(url, "supFac","配套设施").setTextValue("",page));
+    	    }  
+    	
+    		/*客房设施*/
+    		StringBuffer roomFacilityTmp = new StringBuffer();
+    	    NodeList  roomFacility_nodes = selectNodeList(doc, "//DIV[@class='hotel-introduce']/DL[3]/DD/SPAN");
+    		for(int i=0; i<roomFacility_nodes.getLength(); i++){
+    		    if(((Element)roomFacility_nodes.item(i)) != null){
+    		       roomFacilityTmp.append(((Element)roomFacility_nodes.item(i)).getTextContent()).append("##");
+    		    }	    	  
+    		}
+    		String roomFacilityStr=roomFacilityTmp.substring(0,roomFacilityTmp.length()-2).replaceAll("\n", "").replaceAll(" ", "");
+    		if(roomFacilityStr != null){
+    			crawlDatas.add(new CrawlData(url, "roomFac","客房设施").setTextValue(roomFacilityStr,page));
+    		}else{
+    			crawlDatas.add(new CrawlData(url, "roomFac","客房设施").setTextValue("",page));
+    		}  
+    		
+    		/*酒店服务*/
+    		StringBuffer hotelServiceTmp = new StringBuffer();
+    		NodeList  hotel_nodes = selectNodeList(doc, "//DIV[@class='hotel-introduce']/DL[4]/DD/SPAN");
+    	    for(int i=0; i<hotel_nodes.getLength(); i++){
+    		   if(((Element)hotel_nodes.item(i)) != null){
+    		    	 hotelServiceTmp.append(((Element)hotel_nodes.item(i)).getTextContent()).append("##");
+    		   }	    	  
+    		}
+    		String hotelServiceStr=hotelServiceTmp.substring(0,hotelServiceTmp.length()-2).replaceAll("\n", "").replaceAll(" ", "");
+    		if(hotelServiceStr != null){
+    			crawlDatas.add(new CrawlData(url, "hotelSer","酒店服务").setTextValue(hotelServiceStr,page));
+    		}else{
+    			crawlDatas.add(new CrawlData(url, "hotelSer","酒店服务").setTextValue("",page));
+    		} 
+    		
+    		
+        	
         	
     	//周边酒店
+    		
+    		
     	//周边交通
     	//周边景点      
         
