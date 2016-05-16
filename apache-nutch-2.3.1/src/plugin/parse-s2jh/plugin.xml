@@ -51,7 +51,7 @@
                       class="org.apache.nutch.parse.s2jh.CtripHotelHtmlParseFilter">
       </implementation>
        <implementation id="ctripPiaoHtmlParseFilter"
-                      class="org.apache.nutch.parse.s2jh.CtrpPiaoHtmlParseFilter">
+                      class="org.apache.nutch.parse.s2jh.CtripPiaoHtmlParseFilter">
      </implementation>
 		
 	   <!--

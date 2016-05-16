@@ -12,7 +12,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.google.common.collect.Lists;
-
 public class CtripPiaoHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
 	public static final Logger LOG = LoggerFactory.getLogger(CtripHotelHtmlParseFilter.class);
 	
@@ -37,7 +36,7 @@ public class CtripPiaoHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
         	}  
         
         	/*酒景评级 level*/	
-        	String  levelStr = getXPathValue(doc, "//DIV[@class='media-right']/SPAN[@class='media-grade']");
+        	String  levelStr = getXPathValue(doc, "//DIV[@class='media-right']/SPAN[@class='media-grade']").replaceAll(" ", "");
         	if(levelStr!= null){
         		crawlDatas.add(new CrawlData(url, "level","酒景评级").setTextValue(levelStr,page));
         	}else{
@@ -45,7 +44,7 @@ public class CtripPiaoHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
         	}
         	
         	/*酒景地址 adress*/
-        	String adressStr=getXPathValue(doc, "//DIV[@class='media-title']/UL/LI[1]");
+        	String adressStr=(getXPathValue(doc, "//DIV[@class='media-right']/UL/LI[1]/EM")+"##"+getXPathValue(doc, "//DIV[@class='media-right']/UL/LI[1]/SPAN")).replaceAll(" ", "");
         	if(adressStr!=null){
         		
         			crawlDatas.add(new CrawlData(url, "address","酒景地址").setTextValue(adressStr,page)); 
@@ -57,10 +56,10 @@ public class CtripPiaoHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
         	
         /*酒景基本信息*/
         StringBuffer basicInfoBuf=new StringBuffer();
-        basicInfoBuf.append(getXPathValue(doc, "//DIV[@class='media-title']/UL/LI[2]")).append("&&");
-        basicInfoBuf.append(getXPathValue(doc, "//DIV[@id='content-wrapper']/DIV[@class='content-left']/DIV[@id='J-content']']/DIV[@class[@class='c-wrapper no-border-top layoutfix']/DL[@class='c-wrapper-info']/DD[1]")).append("&&");
-        basicInfoBuf.append(getXPathValue(doc, "//DIV[@id='content-wrapper']/DIV[@class='content-left']/DIV[@id='J-content']']/DIV[@class[@class='c-wrapper no-border-top layoutfix']/DL[@class='c-wrapper-info']/DD[3]"));
-        String basicInfoStr=basicInfoBuf.toString();
+        basicInfoBuf.append(getXPathValue(doc, "//DIV[@class='media-right']/UL/LI[2]")).append("&&");
+        basicInfoBuf.append(getXPathValue(doc, "//DIV[@id='content-wrapper']/DIV[@class='content-left']/DIV[@id='J-content']/DIV[@class='c-wrapper no-border-top layoutfix']/DL[@class='c-wrapper-info']/DD[1]")).append("&&");
+        basicInfoBuf.append(getXPathValue(doc, "//DIV[@id='content-wrapper']/DIV[@class='content-left']/DIV[@id='J-content']/DIV[@class='c-wrapper no-border-top layoutfix']/DL[@class='c-wrapper-info']/DD[3]"));
+        String basicInfoStr=basicInfoBuf.toString().replaceAll(" ", "");
     	if(basicInfoStr != null){
     		crawlDatas.add(new CrawlData(url, "basicInfo","酒景基本信息").setTextValue(basicInfoStr,page));
     	}else{
@@ -68,7 +67,23 @@ public class CtripPiaoHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
     	}
     	
     	/*酒景简介*/
-    	String  introductionStr = getXPathValue(doc, "//DIV[@id='J-Jdjj']/DIV[@class='feature-wrapper']").replaceAll(" ", "");
+    	StringBuffer introductionsb = new StringBuffer();
+ 	    String introductionStr=null;
+ 	    NodeList  introindex_nodes = selectNodeList(doc, "//DIV[@id='J-Jdjj']/DIV[@class='feature-wrapper']/UL/LI/SPAN");
+ 	    NodeList  introcontext_nodes = selectNodeList(doc, "//DIV[@id='J-Jdjj']/DIV[@class='feature-wrapper']/UL/LI/P");
+ 	    if(introindex_nodes!=null&&introcontext_nodes!=null)
+ 	    {
+ 	       if(introindex_nodes.getLength()==introcontext_nodes.getLength())
+ 	       {
+ 	    	   for(int i=0; i<introindex_nodes.getLength(); i++){
+ 	 	            if(((Element)introindex_nodes.item(i) != null)&&((Element)introcontext_nodes.item(i) != null)){	 	    	      
+ 	 	            	introductionsb.append(((Element)introindex_nodes.item(i)).getTextContent()).append("##");
+ 	 	            	introductionsb.append(((Element)introcontext_nodes.item(i)).getTextContent()).append("$;");
+ 	 	            }	    	  
+ 	 	        }
+ 	       }
+ 	    } 
+    	introductionStr = introductionsb.append(getXPathValue(doc, "//DIV[@id='J-Jdjj']/DIV[@class='feature-wrapper']/DIV[@class='feature-content']")).toString().replaceAll("\n", "").replaceAll(" ", "");
     	if(introductionStr != null){
     		crawlDatas.add(new CrawlData(url, "introduction","酒景简介").setTextValue(introductionStr,page));
     	}else{
@@ -87,7 +102,7 @@ public class CtripPiaoHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
  	   StringBuffer hotelsb = new StringBuffer();
 	    String hotelStr=null;
 	    NodeList  hotelname_nodes = selectNodeList(doc, "//DIV[@id='J-NearHotel']/UL[@class='hotel-list layoutfix']/LI/DIV[@class='hotel-intro']/A");
-	    NodeList  hoteldis_nodes = selectNodeList(doc, "//DIV[@id='J-NearHotel']/UL[@class='hotel-list layoutfix']/LI/DIV[@class='hotel-intro']/SPAN");
+	    NodeList  hoteldis_nodes = selectNodeList(doc, "//DIV[@id='J-NearHotel']/UL[@class='hotel-list layoutfix']/LI/DIV[@class='hotel-intro']/SPAN[2]");
 	    if(hotelname_nodes!=null&&hoteldis_nodes!=null)
 	    {
 	       if(hotelname_nodes.getLength()==hoteldis_nodes.getLength())
