@@ -47,6 +47,7 @@
 	 <implementation id="elongHotelHtmlParseFilter"
                       class="org.apache.nutch.parse.s2jh.ElongHotelHtmlParseFilter">
       </implementation>
+
        <implementation id="ctripHotelHtmlParseFilter"
                       class="org.apache.nutch.parse.s2jh.CtripHotelHtmlParseFilter">
       </implementation>

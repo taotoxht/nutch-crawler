@@ -121,7 +121,8 @@
     <!--官方文档及推荐为HBase，本项目默认配置为HbaseDB。需要同步配置gora.properties文件中相关参数。-->
 	<property>
 		<name>storage.data.store.class</name>
-	    <value>org.apache.gora.mongodb.store.MongoStore</value>
+		<!-- <value>org.apache.gora.hbase.store.HBaseStore</value> -->
+	        <value>org.apache.gora.mongodb.store.MongoStore</value> 
 		<description>Default class for storing data</description>
 	</property>
 
@@ -149,7 +150,7 @@
     
     <property>
 	  <name>http.timeout</name>
-	  <value>2000</value>
+	  <value>5000</value>
 	  <description>The default network timeout, in milliseconds.</description>
 	</property>
     
@@ -215,7 +216,7 @@
 	</property>
 	<property>
 		<name>mongodb.host</name>
-		<value>192.168.9.25</value>
+		<value>192.168.9.21</value>
 	</property>
 	<property>
 		<name>mongodb.port</name>
@@ -223,7 +224,7 @@
 	</property>
 	<property>
 		<name>mongodb.db</name>
-		<value>nutch_xiang</value>
+		<value>nutch_xuht</value>
 	</property>
 	
 </configuration>

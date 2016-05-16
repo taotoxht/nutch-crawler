@@ -16,10 +16,18 @@
  */
 package org.apache.nutch.parse;
 
-// Commons Logging imports
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.avro.util.Utf8;
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.util.StringUtils;
@@ -37,13 +45,9 @@ import org.apache.nutch.util.URLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+// Commons Logging imports
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 /**
  * A Utility class containing methods to simply perform parsing utilities such
@@ -244,6 +248,19 @@ public class ParseUtil extends Configured {
           page.getOutlinks().clear();
         }
         final Outlink[] outlinks = parse.getOutlinks();
+          
+           //taotoxht st
+//         StringBuilder sb = new StringBuilder();
+//            for(Outlink ol:outlinks){
+//            	sb.append(ol.getToUrl()).append('\n');
+//            }
+//         try {
+//			FileUtils.writeStringToFile(new File("/home/tao/data/tmp/ols.txt"), sb.toString());
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+         //taotoxht ed
         int outlinksToStore = Math.min(maxOutlinks, outlinks.length);
         String fromHost;
         if (ignoreExternalLinks) {
