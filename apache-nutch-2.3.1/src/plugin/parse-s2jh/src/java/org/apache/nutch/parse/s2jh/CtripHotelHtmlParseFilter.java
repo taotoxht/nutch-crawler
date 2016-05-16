@@ -23,7 +23,6 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
     public Parse filterInternal(String url, WebPage page, Parse parse, HTMLMetaTags metaTags, DocumentFragment doc) throws Exception {
 		
 		List<CrawlData> crawlDatas = Lists.newArrayList();
-        crawlDatas.add(new CrawlData(url, "domain", "域名").setTextValue("ctrip.com", page));
         System.out.println("开始解析!");
         
 //        <h2 class="cn_n" itemprop="nam
@@ -199,7 +198,17 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
 	    	for(int i=0; i<trafficItems.getLength(); i++){
 	    		Node trafficItem = trafficItems.item(i);
 	    		List<String> tr = new ArrayList<String>(2);
-	    		tr.add(getXPathAttribute(trafficItems.item(i), "span", "class"));
+	    		String cla = getXPathAttribute(trafficItems.item(i), "span", "class");
+	    		if(cla != null){
+	    			String[] clas = cla.split(" ");
+	    			if(clas.length>=2){
+	    				tr.add(clas[1]);
+	    			}else{
+	    				tr.add("");
+	    			}
+	    		}else{
+	    			tr.add("");
+	    		}
 	    		String trafficStr=null;
 	    		StringBuffer trafficsb = new StringBuffer();
 	    		NodeList  trafficpos_nodes = selectNodeList(trafficItem, "P[@class='name']");
@@ -226,8 +235,8 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter  {
 	    	 crawlDatas.add(new CrawlData(url, "surTra","周边交通").setJsonValue(trs,page));
 	    	 
 	    }
-	   
-	    
+	    crawlDatas.add(new CrawlData(url, "type","酒景类型").setTextValue("酒店",page));
+	    crawlDatas.add(new CrawlData(url, "dataSrc", "渠道来源").setTextValue("ctrip", page));
 //	    String trafficStr="";
        	
 

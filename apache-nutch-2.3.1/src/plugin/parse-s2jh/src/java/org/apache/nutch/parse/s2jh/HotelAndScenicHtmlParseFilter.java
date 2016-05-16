@@ -98,7 +98,7 @@ public abstract class HotelAndScenicHtmlParseFilter extends
 			}
 			coll.update(new BasicDBObject("url", url).append("crawlVersion", this.crawlVersion), bo, true, false);
 			
-			//updatemergetable(db,bo);
+			updateMergeTable(db,bo);
 			
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
@@ -207,6 +207,7 @@ public abstract class HotelAndScenicHtmlParseFilter extends
 			
 		}
 		bo.append("crawlVersion", o);
+		bo.append("updateTime", fetchTIme);
 		return retVal;
 	}
 
