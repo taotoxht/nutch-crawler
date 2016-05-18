@@ -67,8 +67,45 @@
 -^http://home.cpd.com.cn
 
 ################## ctrip htmlunit 排除 ###################
-#-^https://pages.c-ctrip.com/Cdid/deviceid.js
-#-^http://webresource.c-ctrip.com/ResCRMOnline/R1/pageheader/js/PageHeadController.js?temp=20160510
+-^https://pages.c-ctrip.com/Cdid/deviceid.js
+-^http://ckmap.mediav.com
+-^http://webapi.amap.com
+-^http://s.c-ctrip.com
+-^http://tubi.gdt.qq.com
+-^http://qzs.qq.com
+-^http://dat.gtags.net
+-^http://m.ctrip.com
+-^http://dimg0\d.c-ctrip.com
+-^http://images3.c-ctrip.com
+-^https://accounts.ctrip.com
+-^http://pages.ctrip.com
+-^http://crm.ws.ctrip.com
+-^http://webresource.c-ctrip.com/ResCRMOnline
+-^http://webresource.c-ctrip.com/code/ubt
+-^http://webresource.c-ctrip.com/reshotelcasonline
+-^http://webresource.c-ctrip.com/ResHotelOnline
+-^http://fonts.gstatic.com
+-^http://piao.ctrip.com/Thingstodo-Booking-ShoppingWebSite/api/TicketDetailApi/action/GetMultimedia?scenicSpotId=50102
+#-^http://piao.ctrip.com/Thingstodo-Booking-ShoppingWebSite/api/TicketDetailApi/action/GetLatestComment?scenicSpotId=50102
+#-^http://piao.ctrip.com/Thingstodo-Booking-ShoppingWebSite/api/TicketDetailApi/action/GetTTDTab?scenicSpotId=50102
+#-^http://piao.ctrip.com/Thingstodo-Booking-ShoppingWebSite/api/DetailPageTaoCan/Get?para=%7B%22vsid%22%3A50102%7D
+#-^http://piao.ctrip.com/Thingstodo-Booking-ShoppingWebSite/api/TicketDetailApi/action/GetNearHote?para=%7B%22lo%22%3A%22114.287649%22%2C%22la%22%3A%2222.626682%22%2C%22cid%22%3A30%7D
+-^http://hotels.ctrip.com/Domestic/Tool
+-^http://hotels.ctrip.com/Domestic
+#/cas/TableTennis
+#-^http://piao.ctrip.com/Thingstodo-Booking-ShoppingWebSite/api/TicketDetailApi/action/GetNearbyScenicSpots?lo=114.287649&la=22.626682
+#-^http://piao.ctrip.com/Thingstodo-Booking-ShoppingWebSite/api/TicketDetailApi/action/GetUserComments?productId=77615&page=1
+#http://webresource.c-ctrip.com/code/cquery/mod/page-1.2.js
+#http://webresource.c-ctrip.com/code/cquery/LABjs/LAB.js
+#http://webresource.c-ctrip.com/code/cquery/mod/sideBar-2.0.js
+#http://webresource.c-ctrip.com/code/cquery/LABjs/LAB.js
+#http://webresource.c-ctrip.com/code/cquery/cQuery_110421.js?v=prd_2016_0322_0000
+#-^http://webresource.c-ctrip.com/ResUnionOnline
+#-^http://hotels.ctrip.com.*
+#-^http://hotels.ctrip.com/hotel/419302.html
+#-^http://piao.ctrip.com/dest/t50102.html
+
+
 
 # accept anything else
 +.*

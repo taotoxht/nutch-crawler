@@ -6,7 +6,7 @@
 <configuration>
     <!--此参数主要用于在IDE环境开发模式运行，在构建输出的runtime部署运行请注释或删除此项参数-->
     <!-- Just for development, please remove this plugin.folders for production env -->
-      <!-- <property>
+   <!--    <property>
         <name>plugin.folders</name>
         <value>./src/plugin</value>
     </property>  -->
@@ -153,6 +153,49 @@
 	  <value>5000</value>
 	  <description>The default network timeout, in milliseconds.</description>
 	</property>
+	
+	
+	<property>
+	  <name>fetcher.threads.per.queue</name>
+	  <value>30</value>
+	  <description>This number is the maximum number of threads that
+	    should be allowed to access a queue at one time. Setting it to 
+	    a value > 1 will cause the Crawl-Delay value from robots.txt to
+	    be ignored and the value of fetcher.server.min.delay to be used
+	    as a delay between successive requests to the same server instead 
+	    of fetcher.server.delay.
+	   </description>
+	</property>
+	<property>
+	 <name>fetcher.max.crawl.delay</name>
+	 <value>10</value>
+	 <description>
+	 If the Crawl-Delay in robots.txt is set to greater than this value (in
+	 seconds) then the fetcher will skip this page, generating an error report.
+	 If set to -1 the fetcher will never skip such pages and will wait the
+	 amount of time retrieved from robots.txt Crawl-Delay, however long that
+	 might be.
+	 </description>
+	</property> 
+	<property>
+	  <name>fetcher.threads.fetch</name>
+	  <value>30</value>
+	  <description>The number of FetcherThreads the fetcher should use.
+	  This is also determines the maximum number of requests that are
+	  made at once (each FetcherThread handles one connection). The total
+	  number of threads running in distributed mode will be the number of
+	  fetcher threads * number of nodes as fetcher has one map task per node.
+	  </description>
+	</property>
+	<property>
+	  <name>fetcher.queue.depth.multiplier</name>
+	  <value>100</value>
+	  <description>(EXPERT)The fetcher buffers the incoming URLs into queues based on the [host|domain|IP]
+	  (see param fetcher.queue.mode). The depth of the queue is the number of threads times the value of this parameter.
+	  A large value requires more memory but can improve the performance of the fetch when the order of the URLS in the fetch list
+	  is not optimal.
+	  </description>
+	</property>
     
     <!-- 代理配置 -->
 	<property>
@@ -216,7 +259,7 @@
 	</property>
 	<property>
 		<name>mongodb.host</name>
-		<value>192.168.9.21</value>
+		<value>192.168.9.114</value>
 	</property>
 	<property>
 		<name>mongodb.port</name>
@@ -224,7 +267,7 @@
 	</property>
 	<property>
 		<name>mongodb.db</name>
-		<value>nutch_test</value>
+		<value>nutch</value>
 	</property>
 	
 </configuration>
