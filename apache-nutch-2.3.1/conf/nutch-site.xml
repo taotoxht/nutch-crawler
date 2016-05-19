@@ -6,10 +6,10 @@
 <configuration>
     <!--此参数主要用于在IDE环境开发模式运行，在构建输出的runtime部署运行请注释或删除此项参数-->
     <!-- Just for development, please remove this plugin.folders for production env -->
-      <property>
+    <!--  <property>
         <name>plugin.folders</name>
         <value>./src/plugin</value>
-    </property> 
+    </property>  -->
      
 <!--定义Nutch运行过程引入的插件列表，正则表达式格式。-->
     <!--注意value不要换行尤其是基于xml格式化代码时可能由于value内容较长而自动换行，会导致末尾配置的插件不被识别。
@@ -259,7 +259,7 @@
 	</property>
 	<property>
 		<name>mongodb.host</name>
-		<value>192.168.9.114</value>
+		<value>192.168.1.105</value>
 	</property>
 	<property>
 		<name>mongodb.port</name>
