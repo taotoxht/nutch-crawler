@@ -84,16 +84,16 @@ public class HttpWebClient {
     public static void main(String[] args) throws InterruptedException, IOException {
     	// 测试 代理可行
     	Configuration conf = NutchConfiguration.create();
-        HtmlPage page = getHtmlPage("http://hotel.elong.com/baoding/", conf,"192.168.11.54",8888);
+        HtmlPage page = getHtmlPage("http://hotels.ctrip.com/hotel/wulumuqi39/p0", conf,null ,0);
 //        HtmlPage page = getHtmlPage("http://hotel.elong.com/guangzhou/32001026", conf,"192.168.11.54",8888);
 //        HtmlPage page = getHtmlPage("http://192.168.9.21:8080/ycf-search/solr/vproduct/search?keyWord=%E5%B9%BF%E5%B7%9E", null,"192.168.11.54",8888);
         String html= page.asXml();
         FileUtils.write(new File("/data/sss"), html);
-        if(html.indexOf("保定好时运美景酒店")>=0){
-        	System.out.println("解析成功");
-        }else{
-        	System.out.println("解析失败");
-        }
+//        if(html.indexOf("保定好时运美景酒店")>=0){
+//        	System.out.println("解析成功");
+//        }else{
+//        	System.out.println("解析失败");
+//        }
         TimeUnit.SECONDS.sleep(10);
         
         
