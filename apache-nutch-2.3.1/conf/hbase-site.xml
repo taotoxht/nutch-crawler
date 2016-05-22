@@ -2,7 +2,6 @@
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <!--
 /**
- * Copyright 2009 The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -22,36 +21,8 @@
  */
 -->
 <configuration>
-<property>
-<name>hbase.master</name>
-<value>hdfs://ycf-114:60000</value>
-</property>
-<property>
-<name>hbase.cluster.distributed</name>
-<value>true</value>
-</property>
-<property>
-<name>hbase.rootdir</name>
-<!-- 
-<value>hdfs://ycf-/hbase</value>
- -->
-<value>hdfs://ycf-113:9000/hbase</value>
-
-</property>
-<property>
-<name>hbase.master.maxclockskew</name>
-<value>30000</value>
-</property>
-<property>
-<name>hbase.tmp.dir</name>
-<value>/opt/hadoop2/hbase-0.98.16.1-hadoop2/hbase-tmp</value>
-</property>
-<property>
-<name>hbase.zookeeper.property.dataDir</name>
-<value>/opt/hadoop2/hbase-0.98.16.1-hadoop2/zookeeper-tmp</value>
-</property>
-<property>  
-<name>hbase.zookeeper.quorum</name>   
-<value>ycf-113,ycf-114,ycf-65</value>  
-</property>
+    <property>
+        <name>hbase.rootdir</name>
+        <value>file:///home/tao/Program/hbase/hbase-0.98.19-hadoop2/hbase-tmp</value>
+    </property>
 </configuration>

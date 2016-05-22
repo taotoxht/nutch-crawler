@@ -48,7 +48,7 @@ public class GeneratorMapper extends
   public void map(String reversedUrl, WebPage page, Context context)
       throws IOException, InterruptedException {
     String url = TableUtil.unreverseUrl(reversedUrl);
-
+     System.out.println("generateMap:url"+url);
     if (Mark.GENERATE_MARK.checkMark(page) != null) {
       GeneratorJob.LOG.debug("Skipping {}; already generated", url);
       return;

@@ -184,6 +184,13 @@ public abstract class AbstractFetchSchedule extends Configured implements
     // pages with too long fetchInterval are adjusted so that they fit within
     // maximum fetchInterval (batch retention period).
     long fetchTime = page.getFetchTime();
+    //taotoxht add
+    if(fetchTime>curTime){
+    	 page.setFetchTime(curTime);
+    	 fetchTime =curTime;
+     }	
+    //taotoxht end add 
+    
     if (fetchTime - curTime > maxInterval * 1000L) {
       if (page.getFetchInterval() > maxInterval) {
         page.setFetchInterval(Math.round(maxInterval * 0.9f));

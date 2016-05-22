@@ -6,10 +6,10 @@
 <configuration>
     <!--此参数主要用于在IDE环境开发模式运行，在构建输出的runtime部署运行请注释或删除此项参数-->
     <!-- Just for development, please remove this plugin.folders for production env -->
-    <!--  <property>
+     <property>
         <name>plugin.folders</name>
         <value>./src/plugin</value>
-    </property>  -->
+    </property> 
      
 <!--定义Nutch运行过程引入的插件列表，正则表达式格式。-->
     <!--注意value不要换行尤其是基于xml格式化代码时可能由于value内容较长而自动换行，会导致末尾配置的插件不被识别。
@@ -33,17 +33,6 @@
 		</description>
 	</property> 
 
-    <!--fetcher.parse：设置在每fetch页面后立刻调用parse插件进行页面内容解析；否则fetch阶段只进行页面内容爬取，-->
-    <!--需要到下一个parse阶段批量进行解析调用。一般在开发阶段可以设置为true，方便于爬取和解析两个过程同时触发，-->
-    <!--用于分析确认爬取和解析是否正常处理。-->
-	<property>
-		<name>fetcher.parse</name>
-		<value>false</value>
-		<description>If true, fetcher will parse content. NOTE: previous releases would
-			default to true. Since 2.0 this is set
-			to false as a safer default.
-		</description>
-	</property>
 
 	<property>
 		<name>http.content.limit</name>
@@ -143,21 +132,21 @@
 			failure then using Htmlunit or WebDriver
 		</description>
 	</property>
-    <property>
+    <!-- <property>
         <name>generate.batch.id</name>
         <value>*</value>
-    </property>
+    </property> -->
     
     <property>
 	  <name>http.timeout</name>
-	  <value>5000</value>
+	  <value>10000</value>
 	  <description>The default network timeout, in milliseconds.</description>
 	</property>
 	
 	
 	<property>
 	  <name>fetcher.threads.per.queue</name>
-	  <value>30</value>
+	  <value>15</value>
 	  <description>This number is the maximum number of threads that
 	    should be allowed to access a queue at one time. Setting it to 
 	    a value > 1 will cause the Crawl-Delay value from robots.txt to
@@ -166,6 +155,12 @@
 	    of fetcher.server.delay.
 	   </description>
 	</property>
+	<property>
+	  <name>fetcher.server.min.delay</name>
+	  <value>10</value>
+	 </property>
+	
+	
 	<property>
 	 <name>fetcher.max.crawl.delay</name>
 	 <value>10</value>
@@ -179,7 +174,7 @@
 	</property> 
 	<property>
 	  <name>fetcher.threads.fetch</name>
-	  <value>30</value>
+	  <value>10</value>
 	  <description>The number of FetcherThreads the fetcher should use.
 	  This is also determines the maximum number of requests that are
 	  made at once (each FetcherThread handles one connection). The total
@@ -189,13 +184,14 @@
 	</property>
 	<property>
 	  <name>fetcher.queue.depth.multiplier</name>
-	  <value>100</value>
+	  <value>30</value>
 	  <description>(EXPERT)The fetcher buffers the incoming URLs into queues based on the [host|domain|IP]
 	  (see param fetcher.queue.mode). The depth of the queue is the number of threads times the value of this parameter.
 	  A large value requires more memory but can improve the performance of the fetch when the order of the URLS in the fetch list
 	  is not optimal.
 	  </description>
 	</property>
+	
     
     <!-- 代理配置 -->
 	<property>
@@ -259,15 +255,32 @@
 	</property>
 	<property>
 		<name>mongodb.host</name>
-		<value>192.168.9.114</value>
+		<value>192.168.1.105</value>
 	</property>
 	<property>
 		<name>mongodb.port</name>
 		<value>27017</value>
 	</property>
+	
 	<property>
 		<name>mongodb.db</name>
-		<value>nutch_xuht</value>
+		<value>nutch</value>
 	</property>
-	
+	<property>
+  <name>fetcher.store.content</name>
+  <value>false</value>
+  <description>If true, fetcher will store content.</description>
+</property>
+ <!--fetcher.parse：设置在每fetch页面后立刻调用parse插件进行页面内容解析；否则fetch阶段只进行页面内容爬取，-->
+    <!--需要到下一个parse阶段批量进行解析调用。一般在开发阶段可以设置为true，方便于爬取和解析两个过程同时触发，-->
+    <!--用于分析确认爬取和解析是否正常处理。-->
+	<property>
+		<name>fetcher.parse</name>
+		<value>true</value>
+		<description>If true, fetcher will parse content. NOTE: previous releases would
+			default to true. Since 2.0 this is set
+			to false as a safer default.
+		</description>
+	</property>
+   
 </configuration>

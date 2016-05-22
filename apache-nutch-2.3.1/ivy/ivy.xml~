@@ -123,8 +123,12 @@
         <!-- Uncomment this to use MongoDB as Gora backend. -->
         
         <dependency org="org.apache.gora" name="gora-mongodb" rev="0.6.1" conf="*->default" />
+        <!--
+        <dependency org="org.mongodb" name="mongo-java-driver" rev="2.14.2" conf="*->default" />
+        -->
+        <!--
         <dependency org="org.mongodb" name="mongo-java-driver" rev="3.2.2" conf="*->default" />
-       
+       -->
         <!-- Uncomment this to use Solr as Gora backend. -->
         <!--
         <dependency org="org.apache.gora" name="gora-solr" rev="0.6.1" conf="*->default" />
@@ -165,6 +169,9 @@
 
         <dependency org="com.belerweb" name="pinyin4j" rev="2.5.0" conf="*->default"/>
         <dependency org="org.apache.solr" name="solr-dataimporthandler" rev="4.6.0" conf="*->default" />
+        
+         <dependency org="com.alibaba" name="fastjson" rev="1.2.11" conf="*->default"/>
+        
         <!--global exclusion -->
         <exclude module="ant" />
         <exclude module="slf4j-jdk14" />
@@ -179,5 +186,5 @@
         <exclude module="solr-core" />
     </dependencies>
    
-    <dependency org="com.alibaba" name="fastjson" rev="1.2.11" conf="*->default"/>
+   
 </ivy-module>
