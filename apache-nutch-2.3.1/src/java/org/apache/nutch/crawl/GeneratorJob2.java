@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 
@@ -69,7 +70,10 @@ public class GeneratorJob2 extends NutchTool implements Tool {
   public static final String GENERATOR_RANDOM_SEED = "generate.partition.seed";
   public static final String BATCH_ID = "generate.batch.id";
   public static final String GENERATE_COUNT = "generate.count";
-
+  
+  private String goraMongoAddress;
+  private String goraMongoDb;
+  
   private static final Set<WebPage.Field> FIELDS = new HashSet<WebPage.Field>();
 
   static {
@@ -189,7 +193,7 @@ public class GeneratorJob2 extends NutchTool implements Tool {
     getConf().set(BATCH_ID, batchId);
     	
     //uodate mongo with  batchId
-    
+    readGoraConfig();
     
 
     results.put(BATCH_ID, getConf().get(BATCH_ID));
@@ -201,12 +205,12 @@ public class GeneratorJob2 extends NutchTool implements Tool {
     return results;
   }
   
+  
   public int generateBatchId(Configuration conf,String batchId){
 	  MongoClient mongoClient =null;
 		try {
-			mongoClient = new MongoClient(conf.get("mongodb.host"),
-					Integer.valueOf(conf.get("mongodb.port")));
-			DB db = mongoClient.getDB(conf.get("mongodb.db"));
+			mongoClient = new MongoClient(goraMongoAddress);
+			DB db = mongoClient.getDB(goraMongoDb);
 			String cId = conf.get(Nutch.CRAWL_ID_KEY);
 			String collPrefix = "";
 			if(org.apache.commons.lang3.StringUtils.isNoneEmpty(cId)){
@@ -216,6 +220,7 @@ public class GeneratorJob2 extends NutchTool implements Tool {
 			DBCollection collOps = db.getCollection(crawlColl);
 			//update({"count":{$gt:20}},{$set:{"name":"c4"}},false,true)  
 			BasicDBObject q =new BasicDBObject("batchId",null);
+			
 			
 			DBObject set = new BasicDBObject("batchId",batchId);
 			set.put("markers._gnmrk_", batchId);
@@ -240,6 +245,18 @@ public class GeneratorJob2 extends NutchTool implements Tool {
 			}
 		}
 
+  }
+  
+  public void readGoraConfig(){
+	  Properties pros = new Properties();
+	  try {
+		pros.load(getConf().getConfResourceAsReader("gora.properties"));
+		goraMongoAddress = pros.getProperty("gora.mongodb.servers");
+		goraMongoDb = pros.getProperty("gora.mongodb.db");
+		
+	} catch (IOException e) {
+		throw new RuntimeException(e);
+	}
   }
 
   /**
