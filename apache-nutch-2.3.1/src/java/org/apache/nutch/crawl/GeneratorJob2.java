@@ -34,6 +34,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.apache.ivy.plugins.parser.xml.UpdateOptions;
 import org.apache.nutch.metadata.Nutch;
 import org.apache.nutch.storage.WebPage;
 import org.apache.nutch.util.NutchConfiguration;
@@ -48,6 +49,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.QueryOperators;
 import com.mongodb.WriteResult;
 
 public class GeneratorJob2 extends NutchTool implements Tool {
@@ -201,9 +203,20 @@ public class GeneratorJob2 extends NutchTool implements Tool {
 			String crawlColl = conf.get(Nutch.CRAWL_ID_KEY)+"_webpage";
 			DBCollection collOps = db.getCollection(crawlColl);
 			//update({"count":{$gt:20}},{$set:{"name":"c4"}},false,true)  
-			DBObject q =new BasicDBObject("batchId",null);
-			DBObject o =new BasicDBObject("$set",new BasicDBObject("batchId",batchId));
+			BasicDBObject q =new BasicDBObject("batchId",null);
+			
+			DBObject set = new BasicDBObject("batchId",batchId);
+			set.put("markers._gnmrk_", batchId);
+			BasicDBObject o =new BasicDBObject("$set",set);
 			WriteResult wr = collOps.update(q, o, false, true);
+			long curTime = System.currentTimeMillis();
+			 //taotoxht add
+			q = new BasicDBObject();
+			q .append("fetchTime", new BasicDBObject().append(QueryOperators.GT, curTime));
+			o = new BasicDBObject();
+			o.append("$set", new BasicDBObject().append("fetchTime", curTime));
+			collOps.update(q, o, false, true);
+			
 			return wr.getN();
 		}catch(Exception e){
 			throw new RuntimeException(e);

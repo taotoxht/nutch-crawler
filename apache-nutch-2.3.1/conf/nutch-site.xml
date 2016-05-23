@@ -264,13 +264,13 @@
 	
 	<property>
 		<name>mongodb.db</name>
-		<value>nutch</value>
+		<value>nutch_test</value>
 	</property>
 	<property>
-  <name>fetcher.store.content</name>
-  <value>false</value>
-  <description>If true, fetcher will store content.</description>
-</property>
+	  <name>fetcher.store.content</name>
+	  <value>false</value>
+	  <description>If true, fetcher will store content.</description>
+	</property>
  <!--fetcher.parse：设置在每fetch页面后立刻调用parse插件进行页面内容解析；否则fetch阶段只进行页面内容爬取，-->
     <!--需要到下一个parse阶段批量进行解析调用。一般在开发阶段可以设置为true，方便于爬取和解析两个过程同时触发，-->
     <!--用于分析确认爬取和解析是否正常处理。-->
