@@ -247,9 +247,9 @@ public class HttpResponse implements Response {
             if (!url.toString().endsWith("robots.txt")) {
                 if (readPlainContent(url.toString(), in)) {
                 } else if (readPlainContentByHtmlunit(url,proxyHost,proxyPort)) {
-                } else {
+                } /*else {
                     readPlainContentByWebDriver(url,proxyHost,proxyPort,webDriverPath);
-                }
+                }*/
             }
 
             if (content != null && content.length > 0) {
