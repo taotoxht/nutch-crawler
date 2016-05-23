@@ -19,8 +19,10 @@ package org.apache.nutch.crawl;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
@@ -34,7 +36,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.apache.ivy.plugins.parser.xml.UpdateOptions;
 import org.apache.nutch.metadata.Nutch;
 import org.apache.nutch.storage.WebPage;
 import org.apache.nutch.util.NutchConfiguration;
@@ -178,6 +179,9 @@ public class GeneratorJob2 extends NutchTool implements Tool {
   }
   
   public Map<String, Object> run(Map<String, Object> args) throws Exception {
+	long st = System.currentTimeMillis();
+	DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	LOG.info("GeneratorJob: starting at {}",df.format(new Date()));
     String batchId = (String) args.get(Nutch.ARG_BATCH);
     if (batchId == null) {
       batchId = randomBatchId();
@@ -191,6 +195,9 @@ public class GeneratorJob2 extends NutchTool implements Tool {
     results.put(BATCH_ID, getConf().get(BATCH_ID));
     long generateCount = generateBatchId(getConf(), batchId);
     results.put(GENERATE_COUNT, generateCount);
+    long ed = System.currentTimeMillis();
+    LOG.info("GeneratorJob: finished at {}, time elapsed: {}",df.format(new Date()),(ed-st)/1000);
+    LOG.info("GeneratorJob: generated batch id: {} containing {} URLs",batchId,generateCount);
     return results;
   }
   
@@ -200,7 +207,12 @@ public class GeneratorJob2 extends NutchTool implements Tool {
 			mongoClient = new MongoClient(conf.get("mongodb.host"),
 					Integer.valueOf(conf.get("mongodb.port")));
 			DB db = mongoClient.getDB(conf.get("mongodb.db"));
-			String crawlColl = conf.get(Nutch.CRAWL_ID_KEY)+"_webpage";
+			String cId = conf.get(Nutch.CRAWL_ID_KEY);
+			String collPrefix = "";
+			if(org.apache.commons.lang3.StringUtils.isNoneEmpty(cId)){
+				collPrefix = cId+"_";
+			}
+			String crawlColl = collPrefix + "webpage";
 			DBCollection collOps = db.getCollection(crawlColl);
 			//update({"count":{$gt:20}},{$set:{"name":"c4"}},false,true)  
 			BasicDBObject q =new BasicDBObject("batchId",null);
@@ -219,7 +231,8 @@ public class GeneratorJob2 extends NutchTool implements Tool {
 			
 			return wr.getN();
 		}catch(Exception e){
-			throw new RuntimeException(e);
+			e.printStackTrace();
+			return 0;
 			
 		}finally{
 			if(mongoClient !=null){

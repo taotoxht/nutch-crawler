@@ -6,4 +6,4 @@
 http://hotels.ctrip.com/hotel/Wuhan477
 #http://hotels.ctrip.com/hotel/438802.html
 #http://piao.ctrip.com/dest/dc-guangzhou-32/s-tickets/#ctm_ref=vat_hp_sb_lst
-http://hotels.ctrip.com/hotel/1000015.html
+#http://hotels.ctrip.com/hotel/1000015.html

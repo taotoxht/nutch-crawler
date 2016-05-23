@@ -1,0 +1,21 @@
+http://hotels.ctrip.com/hotel/Beijing1
+http://hotels.ctrip.com/hotel/Shanghai2
+http://hotels.ctrip.com/hotel/Tianjin3
+http://hotels.ctrip.com/hotel/Chongqing4
+http://hotels.ctrip.com/hotel/Dalian6
+http://hotels.ctrip.com/hotel/Qingdao7
+http://hotels.ctrip.com/hotel/Xian10
+http://hotels.ctrip.com/hotel/Nanjing12
+http://hotels.ctrip.com/hotel/Suzhou14
+http://hotels.ctrip.com/hotel/Hangzhou17
+http://hotels.ctrip.com/hotel/Xiamen25
+http://hotels.ctrip.com/hotel/Chengdu28
+http://hotels.ctrip.com/hotel/Shenzhen30
+http://hotels.ctrip.com/hotel/Guangzhou32
+http://hotels.ctrip.com/hotel/Sanya43
+http://hotels.ctrip.com/hotel/Taipei617
+http://hotels.ctrip.com/hotel/Hong Kong58
+http://hotels.ctrip.com/hotel/Jinan144
+http://hotels.ctrip.com/hotel/Ningbo375
+http://hotels.ctrip.com/hotel/Shenyang451
+http://hotels.ctrip.com/hotel/Wuhan477

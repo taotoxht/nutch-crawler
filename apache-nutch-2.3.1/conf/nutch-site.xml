@@ -146,7 +146,7 @@
 	
 	<property>
 	  <name>fetcher.threads.per.queue</name>
-	  <value>15</value>
+	  <value>5</value>
 	  <description>This number is the maximum number of threads that
 	    should be allowed to access a queue at one time. Setting it to 
 	    a value > 1 will cause the Crawl-Delay value from robots.txt to
@@ -255,7 +255,7 @@
 	</property>
 	<property>
 		<name>mongodb.host</name>
-		<value>192.168.1.105</value>
+		<value>192.168.9.114</value>
 	</property>
 	<property>
 		<name>mongodb.port</name>
@@ -264,7 +264,7 @@
 	
 	<property>
 		<name>mongodb.db</name>
-		<value>nutch_test</value>
+		<value>nutch_test1</value>
 	</property>
 	<property>
 	  <name>fetcher.store.content</name>
