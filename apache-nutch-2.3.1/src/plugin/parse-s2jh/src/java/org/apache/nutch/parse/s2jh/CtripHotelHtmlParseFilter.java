@@ -2,6 +2,8 @@ package org.apache.nutch.parse.s2jh;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.nutch.parse.HTMLMetaTags;
@@ -20,7 +22,9 @@ import com.google.common.collect.Lists;
 
 public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter {
 	public static final Logger LOG = LoggerFactory.getLogger(CtripHotelHtmlParseFilter.class);
-
+	//解析电话
+	public static Pattern p = Pattern.compile("(\\d+-?\\d+-?\\d+)");
+	
 	@Override
 	public Parse filterInternal(String url, WebPage page, Parse parse, HTMLMetaTags metaTags, DocumentFragment doc)
 			throws Exception {
@@ -90,8 +94,17 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter {
 
 		/* 总机电话 */
 		String telephoneStr = getXPathValue(doc, "//DIV[@id='htlDes']/P/SPAN/@*");
+		
 		if (telephoneStr != null && telephoneStr.length() >= 14) {
-			crawlDatas.add(new CrawlData(url, "telephone", "总机电话").setTextValue(telephoneStr.substring(2, 14), page));
+//			电话037-876-699<a tar
+			
+			Matcher m = p.matcher(telephoneStr);
+			if(m.find()){
+				crawlDatas.add(new CrawlData(url, "telephone", "总机电话").setTextValue(m.group(), page));
+			}else{
+				crawlDatas.add(new CrawlData(url, "telephone", "总机电话").setTextValue("", page));
+			}
+			
 		} else {
 			crawlDatas.add(new CrawlData(url, "telephone", "总机电话").setTextValue("", page));
 		}
@@ -387,5 +400,15 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter {
 	@Override
 	public String getTableName() {
 		return "crawl_data_ctrip";
+	}
+	
+	public static void main(String[] args) {
+//		电话037-876-699<a tar
+		String telephoneStr ="电话037-876-699<a tar";
+		Pattern p = Pattern.compile("(\\d+-?\\d+-?\\d+)");
+		Matcher m = p.matcher(telephoneStr);
+		if(m.find()){
+			System.out.println(m.group());
+		}
 	}
 }

@@ -3,7 +3,9 @@
 #http://hotels.ctrip.com/hotel/419302.html#ctm_ref=hod_hp_hv_def_n_1
 #http://piao.ctrip.com/dest/t50102.html
 #http://piao.ctrip.com/dest/t50102.html
-http://hotels.ctrip.com/hotel/Wuhan477
+#http://hotels.ctrip.com/hotel/Wuhan477
 #http://hotels.ctrip.com/hotel/438802.html
 #http://piao.ctrip.com/dest/dc-guangzhou-32/s-tickets/#ctm_ref=vat_hp_sb_lst
 #http://hotels.ctrip.com/hotel/1000015.html
+#http://hotels.ctrip.com/hotel/1243307.html
+http://hotels.ctrip.com/hotel/1210531.html
