@@ -368,7 +368,7 @@ public class CtripHotelHtmlParseFilter extends HotelAndScenicHtmlParseFilter {
 		case "服务项目":
 			return "hotelSer";
 		case "客房设施":
-			return "通用roomFac";
+			return "roomFac";
 		}
 		return null;
 	}
